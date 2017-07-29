@@ -19,6 +19,7 @@ class Kontena::Plugin::Platform::ListCommand < Kontena::Command
       p['name'] = "#{state_icon(p.dig('attributes', 'state'))} #{p.dig('organization', 'id')}/#{p.dig('attributes', 'name')}"
       p['organization'] = p.dig('organization', 'id')
       p['url'] = p.dig('attributes', 'url')
+      p['datacenter'] = p.dig('relationships', 'datacenter', 'data', 'id')
     end
   end
 
@@ -26,7 +27,7 @@ class Kontena::Plugin::Platform::ListCommand < Kontena::Command
     {
       name: 'name',
       organization: 'organization',
-      url: 'url'
+      datacenter: 'datacenter'
     }
   end
 
