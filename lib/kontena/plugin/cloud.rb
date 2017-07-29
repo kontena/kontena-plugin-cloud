@@ -4,9 +4,15 @@ module Kontena
       VERSION = "0.1.0"
 
       module Organization
-        module User; end
+        module User
+        end
       end
-      module Datacenter; end
+
+      module Datacenter
+      end
+    end
+
+    module Platform
     end
   end
 end
