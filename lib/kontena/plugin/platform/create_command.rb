@@ -6,7 +6,7 @@ class Kontena::Plugin::Platform::CreateCommand < Kontena::Command
   parameter "[NAME]", "Platform name"
 
   option ['--organization'], 'ORG', 'Organization name'
-  option ['--datacenter'], 'DC', 'Datacenter (us-east, eu-west)'
+  option ['--region'], 'region', 'Region (us-east, eu-west)'
   option ['--initial-size', '-i'], 'SIZE', 'Initial size (number of nodes) for platform'
 
   def execute
@@ -41,9 +41,9 @@ class Kontena::Plugin::Platform::CreateCommand < Kontena::Command
     end
   end
 
-  def prompt_datacenter
+  def prompt_region
     datacenters = cloud_client.get('/datacenters')['data']
-    prompt.select("Choose datacenter region:") do |menu|
+    prompt.select("Choose region:") do |menu|
       datacenters.each do |d|
         menu.choice d.dig('attributes', 'name'), d['id']
       end

@@ -10,10 +10,7 @@ class Kontena::Plugin::Platform::UseCommand < Kontena::Command
 
   def execute
     if name
-      org_name, platform_name = name.split('/')
-      exit_with_error("Invalid name") if platform_name.nil?
-      platform = fetch_platforms_for_org(org_name).find { |p| p.dig('attributes', 'name') == platform_name }
-      exit_with_error "Platform not found: #{name}" unless platform
+      require_platform(name)
     else
       platform = prompt_platform
     end

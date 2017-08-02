@@ -4,23 +4,21 @@ class Kontena::Plugin::Platform::ListCommand < Kontena::Command
 
   requires_current_account_token
 
-  def execute
-    all_platforms = []
-    organizations = cloud_client.get('/organizations')['data']
-    organizations.each do |org|
-      platforms = cloud_client.get("/organizations/#{org['id']}/platforms")['data']
-      platforms.each do |p|
-        p['organization'] = org
-        all_platforms << p
-      end
-    end
+  parameter "[ORG]", "Organization name", environment_variable: "KONTENA_ORGANIZATION"
 
-    print_table(all_platforms) do |p|
-      p['name'] = "#{state_icon(p.dig('attributes', 'state'))} #{p.dig('organization', 'id')}/#{p.dig('attributes', 'name')}"
-      p['organization'] = p.dig('organization', 'id')
+  def execute
+    platforms = cloud_client.get("/organizations/#{org}/platforms")['data']
+
+    print_table(platforms) do |p|
+      p['name'] = "#{state_icon(p.dig('attributes', 'state'))} #{org}/#{p.dig('attributes', 'name')}"
+      p['organization'] = org
       p['url'] = p.dig('attributes', 'url')
       p['datacenter'] = p.dig('relationships', 'datacenter', 'data', 'id')
     end
+  end
+
+  def default_org
+    current_account.username
   end
 
   def fields
