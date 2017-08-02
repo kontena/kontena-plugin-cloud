@@ -11,12 +11,12 @@ class Kontena::Plugin::Platform::ShowCommand < Kontena::Command
   def execute
     require_platform(name)
 
-    platform = cloud_client.get("/organizations/#{current_organization}/platforms/#{current_grid}")['data']
+    platform = find_platform_by_name(current_grid, current_organization)
 
     puts "#{name}:"
     puts "  id: #{platform['id']}"
     puts "  name: #{platform.dig('attributes', 'name')}"
-    puts "  organization: #{org_name}"
+    puts "  organization: #{current_organization}"
     puts "  state: #{platform.dig('attributes', 'state')}"
     puts "  region: #{platform.dig('relationships', 'datacenter', 'data', 'id')}"
     puts "  initial_size: #{platform.dig('attributes', 'initial-size')}"
