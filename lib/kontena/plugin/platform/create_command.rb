@@ -1,33 +1,48 @@
+require_relative 'common'
 class Kontena::Plugin::Platform::CreateCommand < Kontena::Command
   include Kontena::Cli::Common
+  include Kontena::Plugin::Platform::Common
 
   requires_current_account_token
 
   parameter "[NAME]", "Platform name"
 
-  option ['--organization'], 'ORG', 'Organization name'
+  option ['--organization'], 'ORG', 'Organization name', environment_variable: 'KONTENA_ORGANIZATION'
   option ['--region'], 'region', 'Region (us-east, eu-west)'
   option ['--initial-size', '-i'], 'SIZE', 'Initial size (number of nodes) for platform'
+  option '--[no-]use', :flag, 'Switch to use created platform', default: true
+  option '--[no-]remote', :flag, 'Login using a browser on another device', default: Kontena.browserless?
 
   def execute
     confirm("This will create managed platform to Kontena Cloud, proceed?")
 
-    name = prompt.ask("Name:") unless self.name
-    organization = prompt_organization unless self.organization
-    region = prompt_region unless self.region
-    initial_size = prompt_initial_size unless self.initial_size
+    self.name = prompt.ask("Name:") unless self.name
+    self.organization = prompt_organization unless self.organization
+    self.region = prompt_region unless self.region
+    self.initial_size = prompt_initial_size unless self.initial_size
 
     platform = nil
     spinner "Creating platform #{pastel.cyan(name)} to region #{pastel.cyan(region)}" do
-      platform = create_platform(name, organization, initial_size, region)
+      platform = create_platform(name, organization, initial_size, region)['data']
     end
     spinner "Waiting for platform #{pastel.cyan(name)} to come online" do
       online = false
       while !online do
         sleep 5
-        data = cloud_client.get("/organizations/#{organization}/platforms/#{platform.dig('data', 'id')}")['data']
-        online = data.dig('attributes', 'state') == 'online'
+        platform = cloud_client.get("/organizations/#{organization}/platforms/#{platform['id']}")['data']
+        online = platform.dig('attributes', 'state') == 'online'
       end
+    end
+    use_platform(platform) if use?
+  end
+
+  def use_platform(platform)
+    cloud_client.post("/organizations/#{organization}/masters/#{platform.dig('attributes', 'master-id')}/authorize", {})
+    platform_name = "#{organization}/#{name}"
+    login_to_platform(platform_name, platform.dig('attributes', 'url'), remote: remote?)
+    spinner "Switching to use platform #{pastel.cyan(platform_name)}" do
+      config.current_grid = name
+      config.write
     end
   end
 

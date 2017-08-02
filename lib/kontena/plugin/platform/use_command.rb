@@ -7,6 +7,7 @@ class Kontena::Plugin::Platform::UseCommand < Kontena::Command
   requires_current_account_token
 
   parameter "[NAME]", "Platform name"
+  option '--[no-]remote', :flag, 'Login using a browser on another device', default: Kontena.browserless?
 
   def execute
     if name
@@ -17,7 +18,7 @@ class Kontena::Plugin::Platform::UseCommand < Kontena::Command
     end
 
     unless platform_config_exists?(platform['name'])
-      login_to_platform(platform['name'], platform.dig('attributes', 'url'))
+      login_to_platform(platform['name'], platform.dig('attributes', 'url'), remote: remote?)
       puts ""
     else
       config.current_master = platform['name']

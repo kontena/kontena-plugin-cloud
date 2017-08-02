@@ -38,18 +38,17 @@ module Kontena::Plugin::Platform::Common
     @current_organization = org
 
     unless platform_config_exists?(name)
-      platform = find_platform_by_name(platform, org)
-      exit_with_error("Platform not found") unless platform
+      p = find_platform_by_name(platform, org)
+      exit_with_error("Platform not found") unless p
 
       if prompt.yes?("You are not logged in to platform #{name}, login now?")
-      login_to_platform(name, platform.dig('attributes', 'url'))
+      login_to_platform(name, p.dig('attributes', 'url'))
       else
         exit_with_error('Cannot fetch platform info')
       end
-    else
-      self.current_master = name
-      self.current_grid = platform
     end
+    self.current_master = name
+    self.current_grid = platform
   end
 
   def platform_config_exists?(name)
@@ -60,7 +59,10 @@ module Kontena::Plugin::Platform::Common
     cloud_client.get("/organizations/#{org}/platforms")['data'].find { |p| p.dig('attributes', 'name') == name}
   end
 
-  def login_to_platform(name, url)
-    Kontena.run!(['master', 'login', '--silent', '--no-login-info', '--skip-grid-auto-select', '--name', name, url])
+  def login_to_platform(name, url, remote: false)
+    cmd = ['master', 'login', '--silent', '--no-login-info', '--skip-grid-auto-select', '--name', name]
+    cmd << 'remote' if remote
+    cmd << url
+    Kontena.run!(cmd)
   end
 end
