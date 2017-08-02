@@ -23,7 +23,7 @@ module Kontena::Plugin::Platform::Common
 
   # @return [String, NilClass]
   def current_organization
-    @current_organization || ENV['KONTENA_ORGANIZATION'] || current_user.username
+    @current_organization || ENV['KONTENA_ORGANIZATION'] || current_account.username
   end
 
   # @param [String] name
