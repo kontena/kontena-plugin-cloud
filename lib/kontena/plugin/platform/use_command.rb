@@ -17,16 +17,16 @@ class Kontena::Plugin::Platform::UseCommand < Kontena::Command
       platform = prompt_platform
     end
 
-    unless platform_config_exists?(platform['name'])
-      login_to_platform(platform['name'], platform.dig('attributes', 'url'), remote: remote?)
+    unless platform_config_exists?(platform.dig('attributes', 'name'))
+      login_to_platform(platform.dig('attributes', 'name'), platform.dig('attributes', 'url'), remote: remote?)
       puts ""
     else
-      config.current_master = platform['name']
+      config.current_master = platform.dig('attributes', 'name')
       config.current_master.grid = platform.dig('attributes', 'grid-id')
       config.write
     end
 
-    puts "Using platform: #{pastel.cyan(platform['name'])}"
+    puts "Using platform: #{pastel.cyan(platform.dig('attributes', 'name'))}"
   end
 
   def prompt_platform
