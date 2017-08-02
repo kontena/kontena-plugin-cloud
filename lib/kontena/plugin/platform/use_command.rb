@@ -11,28 +11,25 @@ class Kontena::Plugin::Platform::UseCommand < Kontena::Command
   def execute
     if name
       require_platform(name)
+      platform = find_platform_by_name(name, current_organization)
     else
       platform = prompt_platform
     end
 
-    master_name = platform['name']
-    master = config.find_server(master_name)
-    if master.nil?
-      Kontena.run([
-        'master', 'login',
-        '--name', master_name,
-        platform.dig('attributes', 'url')
-      ])
+    unless platform_config_exists?(platform['name'])
+      login_to_platform(platform['name'], platform.dig('attributes', 'url'))
+      puts ""
     else
-      config.current_master = master['name']
+      config.current_master = platform['name']
       config.current_master.grid = platform.dig('attributes', 'grid-id')
       config.write
-      puts "Using platform: #{pastel.cyan(platform['name'])}"
     end
+
+    puts "Using platform: #{pastel.cyan(platform['name'])}"
   end
 
   def prompt_platform
-    platforms = fetch_platforms
+    platforms = fetch_platforms_for_org(current_organization)
     prompt.select("Choose platform") do |menu|
       platforms.each do |p|
         menu.choice p['name'], p
