@@ -14,12 +14,12 @@ class Kontena::Plugin::Platform::CreateCommand < Kontena::Command
 
     name = prompt.ask("Name:") unless self.name
     organization = prompt_organization unless self.organization
-    datacenter = prompt_datacenter unless self.datacenter
+    region = prompt_region unless self.region
     initial_size = prompt_initial_size unless self.initial_size
 
     platform = nil
-    spinner "Creating platform #{pastel.cyan(name)} to datacenter region #{pastel.cyan(datacenter)}" do
-      platform = create_platform(name, organization, initial_size, datacenter)
+    spinner "Creating platform #{pastel.cyan(name)} to region #{pastel.cyan(region)}" do
+      platform = create_platform(name, organization, initial_size, region)
     end
     spinner "Waiting for platform #{pastel.cyan(name)} to come online" do
       online = false
@@ -58,12 +58,12 @@ class Kontena::Plugin::Platform::CreateCommand < Kontena::Command
     end
   end
 
-  def create_platform(name, organization, initial_size, datacenter)
+  def create_platform(name, organization, initial_size, region)
     data = {
       attributes: { "name": name, "initial-size": initial_size },
       relationships: {
         datacenter: {
-          "data": { "type": "datacenters", "id": datacenter }
+          "data": { "type": "datacenters", "id": region }
         }
       }
     }
