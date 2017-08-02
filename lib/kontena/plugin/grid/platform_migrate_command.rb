@@ -1,14 +1,17 @@
 class Kontena::Plugin::Grid::PlatformMigrateCommand < Kontena::Command
   include Kontena::Cli::Common
 
+  banner "Migrate grid to Kontena Cloud platform"
+
   parameter "NAME", "Grid name"
 
-  option "--organization", "ORG", "Organization name", required: true
+  option "--organization", "ORG", "Organization name"
 
   requires_current_master_token
   requires_current_account_token
 
   def execute
+    self.organization = prompt_organization unless self.organization
     grid = client.get("/v1/grids/#{name}")
     attributes = {
       'name' => name,
@@ -20,7 +23,7 @@ class Kontena::Plugin::Grid::PlatformMigrateCommand < Kontena::Command
     end
   end
 
-  def default_organization
+  def prompt_organization
     organizations = cloud_client.get('/organizations')['data']
     prompt.select("Choose organization:") do |menu|
       menu.choice "#{config.current_account.username} (you)", config.current_account.username
