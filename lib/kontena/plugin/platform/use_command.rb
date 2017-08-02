@@ -12,21 +12,22 @@ class Kontena::Plugin::Platform::UseCommand < Kontena::Command
   def execute
     if name
       require_platform(name)
-      platform = find_platform_by_name(name, current_organization)
+      platform = find_platform_by_name(current_grid, current_organization)
     else
       platform = prompt_platform
     end
 
-    unless platform_config_exists?(platform.dig('attributes', 'name'))
-      login_to_platform(platform.dig('attributes', 'name'), platform.dig('attributes', 'url'), remote: remote?)
+    platform_name = "#{current_organization}/#{platform.dig('attributes', 'name')}"
+    unless platform_config_exists?(platform_name)
+      login_to_platform(platform_name, platform.dig('attributes', 'url'), remote: remote?)
       puts ""
     else
-      config.current_master = platform.dig('attributes', 'name')
+      config.current_master = platform_name
       config.current_master.grid = platform.dig('attributes', 'grid-id')
       config.write
     end
 
-    puts "Using platform: #{pastel.cyan(platform.dig('attributes', 'name'))}"
+    puts "Using platform: #{pastel.cyan(platform_name)}"
   end
 
   def prompt_platform
