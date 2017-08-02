@@ -18,7 +18,7 @@ class Kontena::Plugin::Platform::ShowCommand < Kontena::Command
     puts "  name: #{platform.dig('attributes', 'name')}"
     puts "  organization: #{org_name}"
     puts "  state: #{platform.dig('attributes', 'state')}"
-    puts "  datacenter: #{platform.dig('relationships', 'datacenter', 'data', 'id')}"
+    puts "  region: #{platform.dig('relationships', 'datacenter', 'data', 'id')}"
     puts "  initial_size: #{platform.dig('attributes', 'initial-size')}"
     puts "  master: #{platform.dig('attributes', 'url')}"
   end
