@@ -14,5 +14,8 @@ module Kontena
 
     module Platform
     end
+
+    module Grid
+    end
   end
 end

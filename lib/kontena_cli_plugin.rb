@@ -2,6 +2,7 @@ require 'kontena_cli'
 require_relative 'kontena/plugin/cloud'
 require_relative 'kontena/plugin/cloud_command'
 require_relative 'kontena/plugin/platform_command'
+require_relative 'kontena/plugin/grid_command'
 
 Kontena::MainCommand.register("platform", "Platform specific commands", Kontena::Plugin::PlatformCommand)
 
