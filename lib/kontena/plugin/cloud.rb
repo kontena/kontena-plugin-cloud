@@ -8,7 +8,7 @@ module Kontena
         end
       end
 
-      module Datacenter
+      module Region
       end
     end
 

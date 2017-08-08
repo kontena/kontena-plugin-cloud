@@ -1,4 +1,4 @@
-class Kontena::Plugin::Cloud::Datacenter::ListCommand < Kontena::Command
+class Kontena::Plugin::Cloud::Region::ListCommand < Kontena::Command
   include Kontena::Cli::Common
   include Kontena::Cli::TableGenerator::Helper
 
