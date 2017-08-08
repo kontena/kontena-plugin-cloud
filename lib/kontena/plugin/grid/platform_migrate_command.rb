@@ -4,6 +4,7 @@ class Kontena::Plugin::Grid::PlatformMigrateCommand < Kontena::Command
   banner "Migrate grid to Kontena Cloud platform"
 
   parameter "NAME", "Grid name"
+  parameter "PLATFORM", "Platform name"
 
   option "--organization", "ORG", "Organization name"
 
@@ -14,7 +15,8 @@ class Kontena::Plugin::Grid::PlatformMigrateCommand < Kontena::Command
     self.organization = prompt_organization unless self.organization
     grid = client.get("/v1/grids/#{name}")
     attributes = {
-      'name' => name,
+      'name' => platform,
+      'grid' => name,
       'url' => current_master.url,
       'initial-size' => grid['initial_size']
     }
