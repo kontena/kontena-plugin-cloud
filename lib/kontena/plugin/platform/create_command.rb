@@ -11,7 +11,6 @@ class Kontena::Plugin::Platform::CreateCommand < Kontena::Command
   option ['--region'], 'region', 'Region (us-east, eu-west)'
   option ['--initial-size', '-i'], 'SIZE', 'Initial size (number of nodes) for platform'
   option '--[no-]use', :flag, 'Switch to use created platform', default: true
-  option '--[no-]remote', :flag, 'Login using a browser on another device', default: Kontena.browserless?
 
   def execute
     confirm("This will create managed platform to Kontena Cloud, proceed?")
@@ -26,20 +25,18 @@ class Kontena::Plugin::Platform::CreateCommand < Kontena::Command
       platform = create_platform(name, organization, initial_size, region)['data']
     end
     spinner "Waiting for platform #{pastel.cyan(name)} to come online" do
-      online = false
-      while !online do
+      while !platform.online? do
         sleep 5
-        platform = cloud_client.get("/organizations/#{organization}/platforms/#{platform['id']}")['data']
-        online = platform.dig('attributes', 'state') == 'online'
+        platform = find_platform_by_name(platform.id, organization)
       end
     end
     use_platform(platform) if use?
   end
 
+  # @param [Kontena::Cli::Models::Platform] platform
   def use_platform(platform)
-    cloud_client.post("/organizations/#{organization}/masters/#{platform.dig('attributes', 'master-id')}/authorize", {})
     platform_name = "#{organization}/#{name}"
-    login_to_platform(platform_name, platform.dig('attributes', 'url'), remote: remote?)
+    login_to_platform(platform_name, platform.dig('attributes', 'url'))
     spinner "Switching to use platform #{pastel.cyan(platform_name)}" do
       config.current_grid = name
       config.write
@@ -82,6 +79,7 @@ class Kontena::Plugin::Platform::CreateCommand < Kontena::Command
         }
       }
     }
-    cloud_client.post("/organizations/#{organization}/platforms", { data: data })
+    data = cloud_client.post("/organizations/#{organization}/platforms", { data: data })['data']
+    Kontena::Cli::Models::Platform.new(data)
   end
 end

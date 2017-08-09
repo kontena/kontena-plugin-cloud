@@ -7,6 +7,7 @@ class Kontena::Plugin::PlatformCommand < Kontena::Command
   subcommand ['remove', 'rm'], 'Remove platform', load_subcommand('kontena/plugin/platform/remove_command')
   subcommand 'audit-log', 'Show platform audit logs', load_subcommand('kontena/plugin/platform/audit_log_command')
   subcommand 'health', 'Show platform health', load_subcommand('kontena/plugin/platform/health_command')
+  subcommand 'import-grid', 'Import grid as Kontena Platform', load_subcommand('kontena/plugin/platform/import_grid_command')
 
   def execute
   end

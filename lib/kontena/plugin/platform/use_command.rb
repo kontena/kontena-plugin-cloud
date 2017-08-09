@@ -7,7 +7,6 @@ class Kontena::Plugin::Platform::UseCommand < Kontena::Command
   requires_current_account_token
 
   parameter "[NAME]", "Platform name"
-  option '--[no-]remote', :flag, 'Login using a browser on another device', default: Kontena.browserless?
 
   def execute
     if name
@@ -17,13 +16,14 @@ class Kontena::Plugin::Platform::UseCommand < Kontena::Command
       platform = prompt_platform
     end
 
-    platform_name = "#{current_organization}/#{platform.dig('attributes', 'name')}"
+    platform_name = "#{current_organization}/#{platform.name}"
     unless platform_config_exists?(platform_name)
-      login_to_platform(platform_name, platform.dig('attributes', 'url'), remote: remote?)
-      puts ""
+      spinner "Generating platform token" do
+        login_to_platform(platform_name, platform.url)
+      end
     else
       config.current_master = platform_name
-      config.current_master.grid = platform.dig('attributes', 'grid-id')
+      config.current_master.grid = platform.grid_id
       config.write
     end
 
@@ -34,7 +34,7 @@ class Kontena::Plugin::Platform::UseCommand < Kontena::Command
     platforms = fetch_platforms_for_org(current_organization)
     prompt.select("Choose platform") do |menu|
       platforms.each do |p|
-        menu.choice p['name'], p
+        menu.choice p.name, p
       end
     end
   end

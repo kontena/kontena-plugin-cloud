@@ -11,13 +11,12 @@ class Kontena::Plugin::Platform::RemoveCommand < Kontena::Command
 
   def execute
     require_platform(name)
-    platform = fetch_platforms_for_org(current_organization).find { |p| p.dig('attributes', 'name') == current_grid }
-    exit_with_error "Platform not found: #{name}" unless platform
+    platform = find_platform_by_name(name)
 
     confirm_command(name) unless forced?
 
     spinner "Removing platform #{pastel.cyan(name)}" do
-      cloud_client.delete("/organizations/#{current_organization}/platforms/#{platform['id']}")
+      cloud_client.delete("/organizations/#{current_organization}/platforms/#{platform.id}")
       remove_from_config(name)
     end
   end

@@ -1,6 +1,9 @@
+require_relative 'common'
+
 class Kontena::Plugin::Platform::ListCommand < Kontena::Command
   include Kontena::Cli::Common
   include Kontena::Cli::TableGenerator::Helper
+  include Kontena::Plugin::Platform::Common
 
   requires_current_account_token
 
@@ -10,10 +13,11 @@ class Kontena::Plugin::Platform::ListCommand < Kontena::Command
     platforms = cloud_client.get("/organizations/#{org}/platforms")['data']
 
     print_table(platforms) do |p|
-      p['name'] = "#{state_icon(p.dig('attributes', 'state'))} #{org}/#{p.dig('attributes', 'name')}"
-      p['organization'] = org
-      p['url'] = p.dig('attributes', 'url')
-      p['region'] = p.dig('relationships', 'datacenter', 'data', 'id')
+      platform = Kontena::Cli::Models::Platform.new(p)
+      p['name'] = "#{state_icon(platform.state)} #{org}/#{platform.name}"
+      p['organization'] = platform.organization
+      p['url'] = platform.url
+      p['region'] = platform.region
     end
   end
 

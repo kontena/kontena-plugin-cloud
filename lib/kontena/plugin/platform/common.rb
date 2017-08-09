@@ -1,3 +1,6 @@
+require_relative '../../cli/master_code_exchanger'
+require_relative '../../cli/models/platform'
+
 module Kontena::Plugin::Platform::Common
   def fetch_platforms
     all = []
@@ -9,21 +12,21 @@ module Kontena::Plugin::Platform::Common
   end
 
   # @param [String] org_id
-  # @return [Array<Hash>]
+  # @return [Array<Kontena::Cli::Models::Platform>]
   def fetch_platforms_for_org(org_id)
     platforms = cloud_client.get("/organizations/#{org_id}/platforms")['data']
     platforms.map do |p|
-      p['name'] = "#{org_id}/#{p.dig('attributes', 'name')}"
-      p.merge({
-        'name' => "#{org_id}/#{p.dig('attributes', 'name')}",
-        'org_id' => org_id
-      })
+      Kontena::Cli::Models::Platform.new(p)
     end
   end
 
   # @return [String, NilClass]
   def current_organization
     @current_organization || ENV['KONTENA_ORGANIZATION'] || (current_account && current_account.username)
+  end
+
+  def current_platform
+    self.current_grid
   end
 
   # @param [String] name
@@ -41,11 +44,7 @@ module Kontena::Plugin::Platform::Common
       p = find_platform_by_name(platform, org)
       exit_with_error("Platform not found") unless p
 
-      if prompt.yes?("You are not logged in to platform #{name}, login now?")
-      login_to_platform(name, p.dig('attributes', 'url'))
-      else
-        exit_with_error('Cannot fetch platform info')
-      end
+      login_to_platform(name, p.url)
     end
     self.current_master = name
     self.current_grid = platform
@@ -56,13 +55,22 @@ module Kontena::Plugin::Platform::Common
   end
 
   def find_platform_by_name(name, org)
-    cloud_client.get("/organizations/#{org}/platforms")['data'].find { |p| p.dig('attributes', 'name') == name}
+    data = cloud_client.get("/organizations/#{org}/platforms/#{name}")['data']
+    if data
+      Kontena::Cli::Models::Platform.new(data)
+    end
   end
 
-  def login_to_platform(name, url, remote: false)
-    cmd = ['master', 'login', '--silent', '--no-login-info', '--skip-grid-auto-select', '--name', name]
-    cmd << 'remote' if remote
-    cmd << url
+  def login_to_platform(name, url)
+    organization, platform = name.split('/')
+    platform = cloud_client.get("/organizations/#{organization}/platforms/#{platform}")['data']
+    authorization = cloud_client.post("/organizations/#{organization}/masters/#{platform.dig('attributes', 'master-id')}/authorize", {})
+    exchanger = Kontena::Cli::MasterCodeExchanger.new(platform.dig('attributes', 'url'))
+    code = exchanger.exchange_code(authorization['code'])
+    cmd = [
+      'master', 'login', '--silent', '--no-login-info', '--skip-grid-auto-select',
+      '--name', name, '--code', code, url
+    ]
     Kontena.run!(cmd)
   end
 end
