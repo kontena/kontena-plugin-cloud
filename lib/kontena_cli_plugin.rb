@@ -48,4 +48,26 @@ module Kontena
   class Command < Clamp::Command
     prepend CloudCommand
   end
+
+  module CloudClient
+    def parse_response(response)
+      data = super(response)
+      if data.is_a?(Hash) && data['errors']
+        data['error'] = {}
+        errors = data.delete('errors')
+        if errors.size == 1
+          data['error'] = errors[0]['title']
+        else
+          errors.each do |e|
+            data['error'][e['id']] = e['title']
+          end
+        end
+      end
+      data
+    end
+  end
+
+  class Client
+    prepend CloudClient
+  end
 end
