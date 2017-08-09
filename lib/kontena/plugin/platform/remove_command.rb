@@ -11,7 +11,7 @@ class Kontena::Plugin::Platform::RemoveCommand < Kontena::Command
 
   def execute
     require_platform(name)
-    platform = find_platform_by_name(name)
+    platform = find_platform_by_name(current_platform, current_organization)
 
     confirm_command(name) unless forced?
 
