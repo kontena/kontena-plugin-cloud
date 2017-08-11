@@ -10,18 +10,6 @@ class Kontena::Plugin::Cloud::Organization::User::AddCommand < Kontena::Command
 
   def execute
     members = []
-    spinner "Resolving organization #{pastel.cyan(name)} current members" do
-      members = cloud_client.get("/organizations/#{name}/members")['data']
-      members = members.map { |m|
-        {
-          type: 'users',
-          id: m.dig('attributes', 'username'),
-          meta: {
-            role: m.dig('attributes', 'role')
-          }
-        }
-      }
-    end
     username_list.each do |u|
       members << {
         type: 'users',
@@ -31,7 +19,7 @@ class Kontena::Plugin::Cloud::Organization::User::AddCommand < Kontena::Command
     end
     spinner "Adding #{pastel.cyan(username_list.join(', '))} to organization #{pastel.cyan(name)} with role #{pastel.cyan(role)}" do
       data = {data: members}
-      cloud_client.put("/organizations/#{name}/relationships/members", data)
+      cloud_client.post("/organizations/#{name}/relationships/members", data)
     end
   end
 end

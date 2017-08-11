@@ -12,22 +12,15 @@ class Kontena::Plugin::Cloud::Organization::User::RemoveCommand < Kontena::Comma
     confirm_command(username_list.join(',')) unless forced?
 
     members = []
-    spinner "Resolving organization #{pastel.cyan(name)} current members" do
-      members = cloud_client.get("/organizations/#{name}/members")['data']
-      members = members.map { |m|
-        {
-          type: 'users',
-          id: m.dig('attributes', 'username'),
-          meta: {
-            role: m.dig('attributes', 'role')
-          }
-        }
+    username_list.each do |u|
+      members << {
+        type: 'users',
+        id: u
       }
     end
-    members.delete_if { |m| username_list.include?(m[:id]) }
     spinner "Removing #{pastel.cyan(username_list.join(', '))} from organization #{pastel.cyan(name)}" do
       data = {data: members}
-      cloud_client.put("/organizations/#{name}/relationships/members", data)
+      cloud_client.delete("/organizations/#{name}/relationships/members", data)
     end
   end
 end
