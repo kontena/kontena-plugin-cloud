@@ -4,12 +4,10 @@ module Kontena
       VERSION = "1.0.0.pre1"
 
       module Organization
-        module User
-        end
+        module User; end
       end
 
-      module Region
-      end
+      module Region; end
     end
 
     module Platform
