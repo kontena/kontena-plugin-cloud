@@ -31,12 +31,7 @@ module Kontena::Plugin::Platform::Common
 
   # @param [String] name
   def require_platform(name)
-    unless name.include?('/')
-      name = "#{current_organization}/#{name}"
-    end
-    org, platform = name.split('/')
-
-    raise ArgumentError, "Organization missing" unless org
+    org, platform = parse_platform_name(name)
 
     @current_organization = org
 
@@ -48,6 +43,19 @@ module Kontena::Plugin::Platform::Common
     end
     self.current_master = name
     self.current_grid = platform
+  end
+
+  # @param [String] name
+  # @return [Array<String>] organization, platform
+  def parse_platform_name(name)
+    unless name.include?('/')
+      name = "#{current_organization}/#{name}"
+    end
+    org, platform = name.split('/')
+
+    raise ArgumentError, "Organization missing" unless org
+
+    [org, platform]
   end
 
   def platform_config_exists?(name)

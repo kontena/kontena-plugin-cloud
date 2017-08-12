@@ -6,11 +6,11 @@ module Kontena
       module Organization
         module User; end
       end
-
       module Region; end
     end
 
     module Platform
+      module TrustedSubnet; end
     end
 
     module Grid
