@@ -1,13 +1,8 @@
+require_relative 'cloud_api_model'
+
 module Kontena::Cli::Models
   class Platform
-
-    def initialize(api_data)
-      @api_data = api_data
-    end
-
-    def id
-      @api_data['id']
-    end
+    include CloudApiModel
 
     def region
       @api_data.dig('relationships', 'region', 'data', 'id')
@@ -19,15 +14,6 @@ module Kontena::Cli::Models
 
     def organization
       @api_data.dig('relationships', 'organization', 'data', 'id')
-    end
-
-    def method_missing(method, *args, &block)
-      key = method.to_s.gsub('_', '-')
-      if @api_data['attributes'].has_key?(key)
-        @api_data['attributes'][key]
-      else
-        raise ArgumentError.new("Method `#{m}` doesn't exist.")
-      end
     end
   end
 end
