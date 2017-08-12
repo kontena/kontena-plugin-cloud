@@ -13,6 +13,8 @@ module Kontena
     end
 
     module Platform
+      module User
+      end
     end
 
     module Grid
