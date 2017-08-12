@@ -54,9 +54,9 @@ class Kontena::Plugin::Platform::CreateCommand < Kontena::Command
   end
 
   def prompt_region
-    datacenters = cloud_client.get('/datacenters')['data']
+    regions = cloud_client.get('/regions')['data']
     prompt.select("Choose region:") do |menu|
-      datacenters.each do |d|
+      regions.each do |d|
         menu.choice d.dig('attributes', 'name'), d['id']
       end
     end
@@ -74,8 +74,8 @@ class Kontena::Plugin::Platform::CreateCommand < Kontena::Command
     data = {
       attributes: { "name": name, "initial-size": initial_size },
       relationships: {
-        datacenter: {
-          "data": { "type": "datacenters", "id": region }
+        region: {
+          "data": { "type": "region", "id": region }
         }
       }
     }

@@ -1,20 +1,17 @@
 module Kontena
   module Plugin
     module Cloud
-      VERSION = "1.0.0.pre1"
+      VERSION = "1.0.0.pre2"
 
       module Organization
-        module User
-        end
+        module User; end
       end
-
-      module Region
-      end
+      module Region; end
     end
 
     module Platform
-      module User
-      end
+      module User; end
+      module TrustedSubnet; end
     end
 
     module Grid

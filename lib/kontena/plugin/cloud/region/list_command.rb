@@ -5,8 +5,8 @@ class Kontena::Plugin::Cloud::Region::ListCommand < Kontena::Command
   requires_current_account_token
 
   def execute
-    datacenters = cloud_client.get('/datacenters')['data']
-    print_table(datacenters) do |row|
+    regions = cloud_client.get('/regions')['data']
+    print_table(regions) do |row|
       row.merge!(row['attributes'])
     end
   end
