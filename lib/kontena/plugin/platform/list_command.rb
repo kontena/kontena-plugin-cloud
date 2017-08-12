@@ -7,21 +7,21 @@ class Kontena::Plugin::Platform::ListCommand < Kontena::Command
 
   requires_current_account_token
 
-  parameter "[ORG]", "Organization name", environment_variable: "KONTENA_ORGANIZATION"
+  option ["--organization", "--org"], "ORG", "Organization", environment_variable: "KONTENA_ORGANIZATION"
 
   def execute
-    platforms = cloud_client.get("/organizations/#{org}/platforms")['data']
+    platforms = cloud_client.get("/organizations/#{organization}/platforms")['data']
 
     print_table(platforms) do |p|
       platform = Kontena::Cli::Models::Platform.new(p)
-      p['name'] = "#{state_icon(platform.state)} #{org}/#{platform.name}"
+      p['name'] = "#{state_icon(platform.state)} #{organization}/#{platform.name}"
       p['organization'] = platform.organization
       p['url'] = platform.url
       p['region'] = platform.region
     end
   end
 
-  def default_org
+  def default_organization
     current_account.username
   end
 
