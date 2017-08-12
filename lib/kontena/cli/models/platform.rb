@@ -10,7 +10,7 @@ module Kontena::Cli::Models
     end
 
     def region
-      @api_data.dig('relationships', 'datacenter', 'data', 'id')
+      @api_data.dig('relationships', 'region', 'data', 'id')
     end
 
     def online?
