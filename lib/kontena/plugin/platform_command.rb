@@ -1,4 +1,7 @@
+require_relative 'platform/user_command'
+
 class Kontena::Plugin::PlatformCommand < Kontena::Command
+  include Kontena::Plugin::Platform
 
   subcommand ['list', 'ls'], 'List platforms', load_subcommand('kontena/plugin/platform/list_command')
   subcommand ['use', 'switch'], 'Use/switch local scope to platform', load_subcommand('kontena/plugin/platform/use_command')
@@ -9,6 +12,7 @@ class Kontena::Plugin::PlatformCommand < Kontena::Command
   subcommand 'health', 'Show platform health', load_subcommand('kontena/plugin/platform/health_command')
   subcommand 'trusted-subnet', 'Trusted subnet specific commands', load_subcommand('kontena/plugin/platform/trusted_subnet_command')
   subcommand 'import-grid', 'Import grid as Kontena Platform', load_subcommand('kontena/plugin/platform/import_grid_command')
+  subcommand 'user', 'User management commands', UserCommand
 
   def execute
   end

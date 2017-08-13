@@ -10,6 +10,7 @@ module Kontena
     end
 
     module Platform
+      module User; end
       module TrustedSubnet; end
     end
 
