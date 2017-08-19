@@ -72,10 +72,10 @@ class Kontena::Plugin::Platform::CreateCommand < Kontena::Command
 
   def create_platform(name, organization, initial_size, region)
     data = {
-      attributes: { "name": name, "initial-size": initial_size },
+      attributes: { "name" => name, "initial-size" => initial_size },
       relationships: {
         region: {
-          "data": { "type": "region", "id": region }
+          "data" => { "type" => "region", "id" => region }
         }
       }
     }
