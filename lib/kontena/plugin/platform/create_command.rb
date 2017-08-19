@@ -22,7 +22,7 @@ class Kontena::Plugin::Platform::CreateCommand < Kontena::Command
 
     platform = nil
     spinner "Creating platform #{pastel.cyan(name)} to region #{pastel.cyan(region)}" do
-      platform = create_platform(name, organization, initial_size, region)['data']
+      platform = create_platform(name, organization, initial_size, region)
     end
     spinner "Waiting for platform #{pastel.cyan(name)} to come online" do
       while !platform.online? do
@@ -36,7 +36,7 @@ class Kontena::Plugin::Platform::CreateCommand < Kontena::Command
   # @param [Kontena::Cli::Models::Platform] platform
   def use_platform(platform)
     platform_name = "#{organization}/#{name}"
-    login_to_platform(platform_name, platform.dig('attributes', 'url'))
+    login_to_platform(platform_name, platform.url)
     spinner "Switching to use platform #{pastel.cyan(platform_name)}" do
       config.current_grid = name
       config.write
