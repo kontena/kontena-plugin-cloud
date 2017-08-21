@@ -2,9 +2,6 @@ require 'kontena_cli'
 require 'kontena/command'
 require_relative 'kontena/plugin/cloud'
 require_relative 'kontena/plugin/cloud_command'
-require_relative 'kontena/plugin/platform_command'
-
-Kontena::MainCommand.register("platform", "Platform specific commands", Kontena::Plugin::PlatformCommand)
 
 module Kontena
   module Cli
@@ -12,7 +9,7 @@ module Kontena
       def self.included(base)
         if base.respond_to?(:option)
 
-          base.option '--platform', 'PLATFORM', 'Specify platform to use' do |platform|
+          base.option '--platform', 'PLATFORM', 'Specify Kontena Cloud platform to use' do |platform|
             config.current_master = platform
             config.current_grid = platform.split('/')[1]
           end
@@ -24,7 +21,7 @@ module Kontena
 
   module CloudCommand
 
-    PLATFORM_NOT_SELECTED_ERROR = "Platform not selected, use 'kontena platform use' to select a platform"
+    PLATFORM_NOT_SELECTED_ERROR = "Platform not selected, use 'kontena cloud platform use' to select a platform"
 
     def verify_current_master
       super

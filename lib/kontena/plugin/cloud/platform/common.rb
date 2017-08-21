@@ -1,7 +1,8 @@
-require_relative '../../cli/master_code_exchanger'
-require_relative '../../cli/models/platform'
+require_relative '../../../cli/master_code_exchanger'
+require_relative '../../../cli/models/platform'
 
-module Kontena::Plugin::Platform::Common
+module Kontena::Plugin::Cloud::Platform::Common
+
   def fetch_platforms
     all = []
     organizations = cloud_client.get('/organizations')['data']

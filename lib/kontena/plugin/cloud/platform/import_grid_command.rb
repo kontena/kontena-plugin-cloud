@@ -1,7 +1,7 @@
-class Kontena::Plugin::Platform::ImportGridCommand < Kontena::Command
+class Kontena::Plugin::Cloud::Platform::ImportGridCommand < Kontena::Command
   include Kontena::Cli::Common
 
-  banner "Migrate grid to Kontena Cloud platform"
+  banner "Bring your own grid to Kontena Cloud platform"
 
   parameter "MASTER", "Kontena Master name in local config"
   parameter "GRID", "Grid name"

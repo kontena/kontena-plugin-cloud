@@ -1,9 +1,6 @@
-require_relative 'region/list_command'
-
 class Kontena::Plugin::Cloud::RegionCommand < Kontena::Command
-  include Kontena::Plugin::Cloud
 
-  subcommand ['list', 'ls'], 'List regions', Region::ListCommand
+  subcommand ['list', 'ls'], 'List regions', load_subcommand('kontena/plugin/cloud/region/list_command')
 
   def execute
   end

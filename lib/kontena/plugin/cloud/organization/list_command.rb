@@ -9,14 +9,16 @@ class Kontena::Plugin::Cloud::Organization::ListCommand < Kontena::Command
     print_table(organizations) do |row|
       row.merge!(row['attributes'])
       row['name'] = row['name']
+      row['account-status'] = row['account-status'] == 'active' ? pastel.green(row['account-status']) : row['account-status']
       row['role'] = row['owner'] ? pastel.cyan('owner') : 'member'
     end
   end
 
   def fields
     {
-      name: 'name',
-      'your role': 'role'
+      'name' => 'name',
+      'account status' => 'account-status',
+      'your role' => 'role'
     }
   end
 end

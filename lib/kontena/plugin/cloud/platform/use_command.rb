@@ -1,8 +1,8 @@
 require_relative 'common'
 
-class Kontena::Plugin::Platform::UseCommand < Kontena::Command
+class Kontena::Plugin::Cloud::Platform::UseCommand < Kontena::Command
   include Kontena::Cli::Common
-  include Kontena::Plugin::Platform::Common
+  include Kontena::Plugin::Cloud::Platform::Common
 
   requires_current_account_token
 

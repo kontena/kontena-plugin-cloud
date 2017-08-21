@@ -1,14 +1,9 @@
-require_relative 'organization/list_command'
-require_relative 'organization/show_command'
-require_relative 'organization/user_command'
-
 class Kontena::Plugin::Cloud::OrganizationCommand < Kontena::Command
-  include Kontena::Plugin::Cloud
 
-  subcommand ['list', 'ls'], 'List organizations', Organization::ListCommand
-  subcommand 'show', 'Show organization details', Organization::ShowCommand
+  subcommand ['list', 'ls'], 'List organizations', load_subcommand('kontena/plugin/cloud/organization/list_command')
+  subcommand 'show', 'Show organization details', load_subcommand('kontena/plugin/cloud/organization/show_command')
+  subcommand 'user', 'User management commands', load_subcommand('kontena/plugin/cloud/organization/user_command')
 
-  subcommand 'user', 'User management commands', Organization::UserCommand
   def execute
   end
 end
