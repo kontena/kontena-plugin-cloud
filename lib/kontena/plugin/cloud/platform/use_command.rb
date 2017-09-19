@@ -12,11 +12,8 @@ class Kontena::Plugin::Cloud::Platform::UseCommand < Kontena::Command
 
   def execute
     if name && name.include?('/')
-      org = name.split('/').first
-      @current_organization = org
       platform = require_platform(name)
-    end
-    unless platform
+    else
       @current_organization = prompt_organization
       platform = prompt_platform
       require_platform(platform.to_path)
