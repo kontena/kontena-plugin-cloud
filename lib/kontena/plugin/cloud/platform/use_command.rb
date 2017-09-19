@@ -12,30 +12,27 @@ class Kontena::Plugin::Cloud::Platform::UseCommand < Kontena::Command
 
   def execute
     if name && name.include?('/')
-      org, platform = name.split('/')
+      org = name.split('/').first
       @current_organization = org
-    else
-      @current_organization = prompt_organization
+      platform = require_platform(name)
     end
-    if name
-      require_platform(name)
-      platform = find_platform_by_name(current_grid, current_organization)
-    else
+    unless platform
+      @current_organization = prompt_organization
       platform = prompt_platform
+      require_platform(platform.to_path)
     end
 
-    platform_name = "#{current_organization}/#{platform.name}"
-    unless platform_config_exists?(platform_name)
+    unless platform_config_exists?(platform.to_path)
       spinner "Generating platform token" do
-        login_to_platform(platform_name, platform.url)
+        login_to_platform(platform.name, platform.url)
       end
     else
-      config.current_master = platform_name
+      config.current_master = platform.to_path
       config.current_master.grid = platform.grid_id
       config.write
     end
 
-    puts "Using platform: #{pastel.cyan(platform_name)}"
+    puts "Using platform: #{pastel.cyan(platform.to_path)}"
   end
 
 end
