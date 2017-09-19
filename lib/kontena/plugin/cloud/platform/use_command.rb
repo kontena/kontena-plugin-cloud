@@ -19,16 +19,9 @@ class Kontena::Plugin::Cloud::Platform::UseCommand < Kontena::Command
       require_platform(platform.to_path)
     end
 
-    unless platform_config_exists?(platform.to_path)
-      spinner "Generating platform token" do
-        login_to_platform(platform.name, platform.url)
-      end
-    else
-      config.current_master = platform.to_path
-      config.current_master.grid = platform.grid_id
-      config.write
-    end
-
+    config.current_master = platform.to_path
+    config.current_master.grid = platform.grid_id
+    config.write
     puts "Using platform: #{pastel.cyan(platform.to_path)}"
   end
 
