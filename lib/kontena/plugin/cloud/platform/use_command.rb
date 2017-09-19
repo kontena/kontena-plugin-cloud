@@ -7,12 +7,14 @@ class Kontena::Plugin::Cloud::Platform::UseCommand < Kontena::Command
   requires_current_account_token
 
   parameter "[NAME]", "Platform name"
+  option ["--organization", "--org"], "ORG", "Organization", environment_variable: "KONTENA_ORGANIZATION"
 
   def execute
     if name
       require_platform(name)
       platform = find_platform_by_name(current_grid, current_organization)
     else
+      @current_organization = organization if organization
       platform = prompt_platform
     end
 
