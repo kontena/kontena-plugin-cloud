@@ -21,9 +21,18 @@ module Kontena::Plugin::Cloud::Platform::Common
     end
   end
 
+  def prompt_platform
+    platforms = fetch_platforms_for_org(current_organization)
+    prompt.select("Choose platform") do |menu|
+      platforms.each do |p|
+        menu.choice p.name, p
+      end
+    end
+  end
+
   # @return [String, NilClass]
   def current_organization
-    @current_organization || ENV['KONTENA_ORGANIZATION'] || (current_account && current_account.username)
+    @current_organization || ENV['KONTENA_ORGANIZATION']
   end
 
   def current_platform
@@ -35,14 +44,12 @@ module Kontena::Plugin::Cloud::Platform::Common
     org, platform = parse_platform_name(name)
 
     @current_organization = org
-
-    unless platform_config_exists?(name)
+    unless platform_config_exists?("#{current_organization}/#{platform}")
       p = find_platform_by_name(platform, org)
       exit_with_error("Platform not found") unless p
-
-      login_to_platform(name, p.url)
+      login_to_platform("#{current_organization}/#{platform}", p.url)
     end
-    self.current_master = name
+    self.current_master = "#{current_organization}/#{platform}"
     self.current_grid = platform
   end
 
