@@ -3,8 +3,8 @@ require_relative '../../../cli/models/platform'
 
 module Kontena::Plugin::Cloud::Platform::Common
 
-  def platforms
-    @platforms ||= {}
+  def cached_platforms
+    @cached_platforms ||= []
   end
 
   def fetch_platforms
@@ -19,14 +19,12 @@ module Kontena::Plugin::Cloud::Platform::Common
   # @param [String] org_id
   # @return [Array<Kontena::Cli::Models::Platform>]
   def fetch_platforms_for_org(org_id)
-    return platforms[org_id] if platforms[org_id]
-
-    org_platforms = cloud_client.get("/organizations/#{org_id}/platforms")['data']
-    platforms[org_id] = org_platforms.map do |p|
-      Kontena::Cli::Models::Platform.new(p)
+    platforms = cloud_client.get("/organizations/#{org_id}/platforms")['data']
+    platforms.map do |p|
+      platform = Kontena::Cli::Models::Platform.new(p)
+      cached_platforms << platform if cached_platforms.none?{|cached| platform.id == cached.id }
+      platform
     end
-
-    platforms[org_id]
   end
 
   def prompt_platform
@@ -81,12 +79,14 @@ module Kontena::Plugin::Cloud::Platform::Common
   end
 
   def find_platform_by_name(name, org)
-    if platforms[org]
-      platforms[org].find{|p| p.name == name }
+    if platform = cached_platforms.find{|p| p.name == name && p.organization == org }
+      platform
     else
       data = cloud_client.get("/organizations/#{org}/platforms/#{name}")['data']
       if data
-        Kontena::Cli::Models::Platform.new(data)
+        platform = Kontena::Cli::Models::Platform.new(data)
+        cached_platforms << platform
+        platform
       end
     end
   end
