@@ -29,22 +29,18 @@ class Kontena::Plugin::Cloud::Platform::UpgradeCommand < Kontena::Command
     cloud_client.put("/organizations/#{current_organization}/platforms/#{platform.name}", { data: data })
   end
 
+  # @param
   def prompt_version(platform)
     versions = cloud_client.get("/platform_versions")['data']
 
     platform_version = Gem::Version.new(platform.version)
-    versions = versions.select { |v| Gem::Version.new(v['id']) >= platform_version }
+    versions = versions.select { |v| Gem::Version.new(v['id']) > platform_version }
 
     default_version = versions.find_index{ |v| v['id'] == platform.version } + 1
     prompt.select("Upgrade to version:") do |menu|
       menu.default default_version
       versions.each do |v|
-        if v['id'] == platform.version
-          menu.choice "#{v['id']} (redeploy)", v['id']
-        else
-          menu.choice v['id']
-        end
-
+        menu.choice v['id']
       end
     end
   end
