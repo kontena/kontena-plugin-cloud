@@ -6,6 +6,7 @@ class Kontena::Plugin::Cloud::PlatformCommand < Kontena::Command
   subcommand ['remove', 'rm'], 'Remove platform', load_subcommand('kontena/plugin/cloud/platform/remove_command')
   subcommand ['join', 'byo'], 'Join grid as Kontena Platform', load_subcommand('kontena/plugin/cloud/platform/import_grid_command')
   subcommand 'user', 'User management commands', load_subcommand('kontena/plugin/cloud/platform/user_command')
+  subcommand 'upgrade', 'Upgrade platform version', load_subcommand('kontena/plugin/cloud/platform/upgrade_command')
 
   def execute
   end
