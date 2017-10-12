@@ -7,10 +7,11 @@ class Kontena::Plugin::Cloud::Platform::CreateCommand < Kontena::Command
 
   parameter "[NAME]", "Platform name"
 
-  option ['--organization'], 'ORG', 'Organization name', environment_variable: 'KONTENA_ORGANIZATION'
+  option ['--organization', '--org'], 'ORG', 'Organization name', environment_variable: 'KONTENA_ORGANIZATION'
   option ['--region'], 'region', 'Region (us-east, eu-west)'
   option ['--initial-size', '-i'], 'SIZE', 'Initial size (number of nodes) for platform'
   option '--[no-]use', :flag, 'Switch to use created platform', default: true
+  option '--version', 'VERSION', 'Platform version', visible: false
 
   def execute
     confirm("This will create managed platform to Kontena Cloud, proceed?")
@@ -79,6 +80,7 @@ class Kontena::Plugin::Cloud::Platform::CreateCommand < Kontena::Command
         }
       }
     }
+    data[:attributes]['version'] = self.version if self.version
     data = cloud_client.post("/organizations/#{organization}/platforms", { data: data })['data']
     Kontena::Cli::Models::Platform.new(data)
   end

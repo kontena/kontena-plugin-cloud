@@ -18,6 +18,7 @@ class Kontena::Plugin::Cloud::Platform::ShowCommand < Kontena::Command
     puts "#{name}:"
     puts "  name: #{platform.name}"
     puts "  organization: #{current_organization}"
+    puts "  version: #{platform.version}"
     puts "  state: #{platform.state}"
     puts "  region: #{platform.region || '-'}"
     puts "  initial_size: #{platform.initial_size}"
