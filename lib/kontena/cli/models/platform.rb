@@ -9,7 +9,7 @@ module Kontena::Cli::Models
     end
 
     def online?
-      state.to_s == 'online'.freeze
+      state.to_s == 'running'.freeze
     end
 
     def organization

@@ -37,7 +37,7 @@ class Kontena::Plugin::Cloud::Platform::ListCommand < Kontena::Command
     case health
     when nil
       " ".freeze
-    when 'online'.freeze
+    when 'running'.freeze
       pastel.green('⊛'.freeze)
     else
       pastel.dark('⊝'.freeze)

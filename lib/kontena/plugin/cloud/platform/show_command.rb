@@ -20,6 +20,7 @@ class Kontena::Plugin::Cloud::Platform::ShowCommand < Kontena::Command
     puts "  organization: #{current_organization}"
     puts "  version: #{platform.version}"
     puts "  state: #{platform.state}"
+    puts "  online: #{platform.online}"
     puts "  region: #{platform.region || '-'}"
     puts "  initial_size: #{platform.initial_size}"
     puts "  master: #{platform.url}"
