@@ -47,7 +47,6 @@ class Kontena::Plugin::Cloud::Platform::CreateCommand < Kontena::Command
   def prompt_organization
     organizations = cloud_client.get('/organizations')['data']
     prompt.select("Choose organization:") do |menu|
-      menu.choice "#{config.current_account.username} (you)", config.current_account.username
       organizations.each do |o|
         menu.choice o.dig('attributes', 'name')
       end
