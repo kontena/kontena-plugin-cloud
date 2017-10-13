@@ -15,5 +15,9 @@ module Kontena::Cli::Models
     def organization
       @api_data.dig('relationships', 'organization', 'data', 'id')
     end
+
+    def to_path
+      "#{self.organization}/#{self.name}"
+    end
   end
 end

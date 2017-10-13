@@ -64,9 +64,8 @@ class Kontena::Cli::MasterCodeExchanger
     response = @api_client.request(method: method, body: body, path: path, headers: headers)
     content_type = response.headers.dig('Content-Type') || ''
     content_length = response.headers.dig('Content-Length').to_i
-
     body = if content_type.include?('json') && content_length > 0
-      JSON.parse(response.body)
+      JSON.parse(response.body) rescue response.body
     else
       response.body
     end

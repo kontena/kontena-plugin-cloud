@@ -1,41 +1,28 @@
 require_relative 'common'
+require_relative '../organization/common'
 
 class Kontena::Plugin::Cloud::Platform::UseCommand < Kontena::Command
   include Kontena::Cli::Common
   include Kontena::Plugin::Cloud::Platform::Common
+  include Kontena::Plugin::Cloud::Organization::Common
 
   requires_current_account_token
 
   parameter "[NAME]", "Platform name"
 
   def execute
-    if name
-      require_platform(name)
-      platform = find_platform_by_name(current_grid, current_organization)
+    if name && name.include?('/')
+      platform = require_platform(name)
     else
+      @current_organization = prompt_organization
       platform = prompt_platform
+      require_platform(platform.to_path)
     end
 
-    platform_name = "#{current_organization}/#{platform.name}"
-    unless platform_config_exists?(platform_name)
-      spinner "Generating platform token" do
-        login_to_platform(platform_name, platform.url)
-      end
-    else
-      config.current_master = platform_name
-      config.current_master.grid = platform.grid_id
-      config.write
-    end
-
-    puts "Using platform: #{pastel.cyan(platform_name)}"
+    config.current_master = platform.to_path
+    config.current_master.grid = platform.grid_id
+    config.write
+    puts "Using platform: #{pastel.cyan(platform.to_path)}"
   end
 
-  def prompt_platform
-    platforms = fetch_platforms_for_org(current_organization)
-    prompt.select("Choose platform") do |menu|
-      platforms.each do |p|
-        menu.choice p.name, p
-      end
-    end
-  end
 end
