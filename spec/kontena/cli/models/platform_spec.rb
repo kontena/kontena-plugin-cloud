@@ -8,7 +8,7 @@ describe Kontena::Cli::Models::Platform do
       'attributes' => {
         'initial-size' => 3,
         'grid-id' => 'foobar',
-        'state' => 'online'
+        'state' => 'running'
       },
       'relationships' => {
         'region' => {
