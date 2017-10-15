@@ -1,9 +1,11 @@
 require_relative 'common'
+require_relative '../organization/common'
 
 class Kontena::Plugin::Cloud::Platform::ListCommand < Kontena::Command
   include Kontena::Cli::Common
   include Kontena::Cli::TableGenerator::Helper
   include Kontena::Plugin::Cloud::Platform::Common
+  include Kontena::Plugin::Cloud::Organization::Common
 
   requires_current_account_token
 
@@ -22,13 +24,12 @@ class Kontena::Plugin::Cloud::Platform::ListCommand < Kontena::Command
   end
 
   def default_organization
-    current_account.username
+    prompt_organization
   end
 
   def fields
     {
       name: 'name',
-      organization: 'organization',
       region: 'region'
     }
   end
