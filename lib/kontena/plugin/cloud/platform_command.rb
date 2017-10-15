@@ -7,6 +7,7 @@ class Kontena::Plugin::Cloud::PlatformCommand < Kontena::Command
   subcommand ['join', 'byo'], 'Join grid as Kontena Platform', load_subcommand('kontena/plugin/cloud/platform/import_grid_command')
   subcommand 'user', 'User management commands', load_subcommand('kontena/plugin/cloud/platform/user_command')
   subcommand 'upgrade', 'Upgrade platform version', load_subcommand('kontena/plugin/cloud/platform/upgrade_command')
+  subcommand 'env', 'Show the current grid environment details', load_subcommand('kontena/plugin/cloud/platform/env_command')
 
   def execute
   end
