@@ -1,4 +1,5 @@
 class Kontena::Plugin::Cloud::PlatformCommand < Kontena::Command
+  subcommand 'wizard', 'Wizard for creating a platform', load_subcommand('kontena/plugin/cloud/platform/wizard_command')
   subcommand ['list', 'ls'], 'List platforms', load_subcommand('kontena/plugin/cloud/platform/list_command')
   subcommand ['use', 'switch'], 'Use/switch local scope to platform', load_subcommand('kontena/plugin/cloud/platform/use_command')
   subcommand 'show', 'Show platform details', load_subcommand('kontena/plugin/cloud/platform/show_command')
