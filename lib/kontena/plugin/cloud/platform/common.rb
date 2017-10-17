@@ -78,8 +78,12 @@ module Kontena::Plugin::Cloud::Platform::Common
     !self.config.find_server_by(name: name).nil?
   end
 
-  def find_platform_by_name(name, org)
-    if platform = cached_platforms.find{|p| p.name == name && p.organization == org }
+  # @param name [String]
+  # @param org [String]
+  # @param cache [Boolean]
+  # @return [Kontena::Cli::Models::Platform, NilClass]
+  def find_platform_by_name(name, org, cache = true)
+    if cache && platform = cached_platforms.find{|p| p.name == name && p.organization == org }
       platform
     else
       data = cloud_client.get("/organizations/#{org}/platforms/#{name}")['data']

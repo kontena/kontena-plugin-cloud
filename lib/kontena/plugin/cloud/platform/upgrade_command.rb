@@ -31,7 +31,7 @@ class Kontena::Plugin::Cloud::Platform::UpgradeCommand < Kontena::Command
       cloud_client.put("/organizations/#{current_organization}/platforms/#{platform.name}", { data: data })
       while platform.version != to_version do
         sleep 5
-        platform = find_platform_by_name(platform.id, current_organization)
+        platform = find_platform_by_name(platform.id, current_organization, false)
       end
     end
   end
