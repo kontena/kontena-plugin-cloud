@@ -7,9 +7,9 @@ class Kontena::Plugin::Cloud::Token::RemoveCommand < Kontena::Command
   option "--force", :flag, "Force remove", default: false, attribute_name: :forced
 
   def execute
-    self.id = prompt_token unless self.id
+    id = self.id
     confirm unless forced?
-    cloud_client.delete("/user/personal_access_tokens/#{self.id}")
+    cloud_client.delete("/user/personal_access_tokens/#{id}")
   end
 
 
@@ -20,5 +20,9 @@ class Kontena::Plugin::Cloud::Token::RemoveCommand < Kontena::Command
         menu.choice d.dig('attributes', 'name'), d['id']
       end
     end
+  end
+
+  def default_id
+    prompt_token
   end
 end
