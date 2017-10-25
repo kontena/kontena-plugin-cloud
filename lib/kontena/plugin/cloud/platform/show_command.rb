@@ -1,23 +1,33 @@
 require 'kontena/cli/grids/common'
 require_relative 'common'
+require_relative '../organization/common'
 
 class Kontena::Plugin::Cloud::Platform::ShowCommand < Kontena::Command
   include Kontena::Cli::Common
+  include Kontena::Plugin::Cloud::Organization::Common
   include Kontena::Plugin::Cloud::Platform::Common
   include Kontena::Cli::Grids::Common
 
   requires_current_account_token
 
-  parameter "NAME", "Platform name"
+  parameter "[NAME]", "Platform name"
 
   def execute
-    require_platform(name)
+    unless name
+      @current_organization = prompt_organization
+      platform = prompt_platform
+      platform_name = platform.to_path
+    else
+      platform_name = name
+    end
+    require_platform(platform_name)
+    org, name = parse_platform_name(platform_name)
 
-    platform = find_platform_by_name(current_platform, current_organization)
+    platform = find_platform_by_name(name, org)
 
-    puts "#{name}:"
+    puts "#{platform.to_path}:"
     puts "  name: #{platform.name}"
-    puts "  organization: #{current_organization}"
+    puts "  organization: #{platform.organization}"
     puts "  version: #{platform.version}"
     puts "  state: #{platform.state}"
     puts "  online: #{platform.online}"
