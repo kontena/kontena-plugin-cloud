@@ -16,7 +16,7 @@ describe Kontena::Plugin::Cloud::Platform::Common do
 
   describe '#current_organization' do
 
-    it 'returns nil by default' do
+    it 'returns nil if current_account does not exist' do
       expect(subject.current_organization).to be_nil
     end
 
