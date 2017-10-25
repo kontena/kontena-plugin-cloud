@@ -12,6 +12,8 @@ module Kontena
       module Platform
         module User; end
       end
+
+      module Token; end;
     end
 
     module Grid
