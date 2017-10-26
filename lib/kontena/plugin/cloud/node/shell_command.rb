@@ -10,6 +10,7 @@ class Kontena::Plugin::Cloud::Node::ShellCommand < Kontena::Command
   requires_current_account_token
 
   parameter "NAME", "Node name"
+  parameter "[CMD] ...", "Command"
 
   def execute
     service_name = "#{name}-shell-#{rand(1..10_000)}"
@@ -19,9 +20,17 @@ class Kontena::Plugin::Cloud::Node::ShellCommand < Kontena::Command
       service = create_service(service_name, name)
     end
 
+    exec_opts = ['-i']
+    exec_opts << 't' if STDIN.tty?
+    if cmd_list.empty?
+      exec_command = ''
+    else
+      exec_command = "-c \"#{cmd_list.join(' ')}\""
+    end
+
     Kontena.run!([
-      'service', 'exec', '-it', '--shell', service_name,
-      'nsenter --target 1 --mount --uts --net --pid -- su - core'
+      'service', 'exec', exec_opts.join(''), '--shell', service_name,
+      "nsenter --target 1 --mount --uts --net --pid -- su #{exec_command} - core"
     ])
   ensure
     remove_service(service) if service
