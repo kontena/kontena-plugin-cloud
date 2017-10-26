@@ -38,33 +38,32 @@ class Kontena::Plugin::Cloud::Node::CreateCommand < Kontena::Command
   def create_node(platform, token)
     name = "#{generate_name}-#{rand(1..999)}"
     node_token = SecureRandom.hex(32)
-    spinner "Registering node #{pastel.cyan(name)} to platform #{pastel.cyan(platform.to_path)}"
-    client.post("grids/#{current_grid}/nodes", {
-      name: name,
-      token: node_token
-    })
-
-    data = {
-      type: 'nodes',
-      attributes: {
+    spinner "Provisioning node #{pastel.cyan(name)} to platform #{pastel.cyan(platform.to_path)}, region #{pastel.cyan(self.region)}" do
+      client.post("grids/#{current_grid}/nodes", {
         name: name,
-        type: self.type,
-        region: platform.region,
-        tokens: {
-          grid: token,
-          node: node_token
-        }
-      },
-      relationships: {
-        platform: {
-          data: {
-            type: 'platforms',
-            id: platform.id
+        token: node_token
+      })
+
+      data = {
+        type: 'nodes',
+        attributes: {
+          name: name,
+          type: self.type,
+          region: platform.region,
+          tokens: {
+            grid: token,
+            node: node_token
+          }
+        },
+        relationships: {
+          platform: {
+            data: {
+              type: 'platforms',
+              id: platform.id
+            }
           }
         }
       }
-    }
-    spinner "Provisioning node #{pastel.cyan(name)} to region #{pastel.cyan(self.region)}" do
       compute_client.post("/organizations/#{current_organization}/nodes", { data: data })
     end
   end
