@@ -38,7 +38,8 @@ class Kontena::Plugin::Cloud::Node::CreateCommand < Kontena::Command
   def create_node(platform, token)
     name = "#{generate_name}-#{rand(1..999)}"
     node_token = SecureRandom.hex(32)
-    spinner "Provisioning node #{pastel.cyan(name)} to platform #{pastel.cyan(platform.to_path)}, region #{pastel.cyan(self.region)}" do
+    target_region = self.region || platform.region
+    spinner "Provisioning node #{pastel.cyan(name)} to platform #{pastel.cyan(platform.to_path)}, region #{pastel.cyan(target_region)}" do
       client.post("grids/#{current_grid}/nodes", {
         name: name,
         token: node_token
@@ -49,7 +50,7 @@ class Kontena::Plugin::Cloud::Node::CreateCommand < Kontena::Command
         attributes: {
           name: name,
           type: self.type,
-          region: platform.region,
+          region: target_region,
           tokens: {
             grid: token,
             node: node_token
