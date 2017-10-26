@@ -70,7 +70,7 @@ class Kontena::Plugin::Cloud::Node::CreateCommand < Kontena::Command
   end
 
   def default_count
-    prompt.ask("How many nodes?", default: 1)
+    prompt.ask("How many nodes?", default: 1).to_i
   end
 
   def default_type
