@@ -10,21 +10,13 @@ class Kontena::Plugin::Cloud::Node::CreateCommand < Kontena::Command
   include Kontena::Plugin::Cloud::Organization::Common
   include Kontena::Plugin::Cloud::Platform::Common
 
-  NODE_TYPES = {
-    'k1' => '1CPU, 1GB, 30GB SSD',
-    'k2' => '1CPU, 2GB, 60GB SSD',
-    'k4' => '2CPU, 4GB, 120GB SSD',
-    'k8' => '2CPU, 8GB, 240GB SSD',
-    'k16' => '4CPU, 16GB, 480GB SSD'
-  }
-
   requires_current_account_token
 
   option "--count", "COUNT", "How many nodes to create" do |count|
     Integer(count)
   end
-  option "--type", "TYPE", "Node type (k1, k2, k4, k8, k16)", required: true
-  option "--region", "REGION", "Region (us-east-1, eu-west-1, defaults to platform region)"
+  option "--type", "TYPE", "Node type", required: true
+  option "--region", "REGION", "Region (us-east-1, eu-west-1, defaults to current platform region)"
 
   def execute
     org, platform = parse_platform_name(current_master.name)
@@ -74,10 +66,11 @@ class Kontena::Plugin::Cloud::Node::CreateCommand < Kontena::Command
   end
 
   def default_type
+    node_types = compute_client.get("/node_types")['data']
     prompt.select("Choose node type:") do |menu|
       menu.default 3
-      NODE_TYPES.each do |id, name|
-        menu.choice "#{id} (#{name})", id
+      node_types.each do |t|
+        menu.choice "#{t['id']} (#{t.dig('attributes', 'cpus')}xCPU, #{t.dig('attributes', 'memory')}GB, #{t.dig('attributes', 'disk')}GB SSD)"
       end
     end
   end
