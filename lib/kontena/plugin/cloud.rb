@@ -9,6 +9,8 @@ module Kontena
 
       module Region; end
 
+      module Node; end
+
       module Platform
         module User; end
       end

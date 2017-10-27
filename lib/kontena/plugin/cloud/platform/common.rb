@@ -52,9 +52,7 @@ module Kontena::Plugin::Cloud::Platform::Common
     p = find_platform_by_name(platform, org)
     exit_with_error("Platform not found") unless p
     unless platform_config_exists?(p.to_path)
-      spinner "Generating platform token" do
-        login_to_platform("#{current_organization}/#{platform}", p.url)
-      end
+      login_to_platform("#{current_organization}/#{platform}", p.url)
     end
     self.current_master = "#{current_organization}/#{platform}"
     self.current_grid = p.grid_id
