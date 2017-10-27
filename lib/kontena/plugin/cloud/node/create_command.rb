@@ -70,7 +70,7 @@ class Kontena::Plugin::Cloud::Node::CreateCommand < Kontena::Command
     prompt.select("Choose node type:") do |menu|
       menu.default 3
       node_types.each do |t|
-        menu.choice "#{t['id']} (#{t.dig('attributes', 'cpus')}xCPU, #{t.dig('attributes', 'memory')}GB, #{t.dig('attributes', 'disk')}GB SSD)"
+        menu.choice "#{t['id']} (#{t.dig('attributes', 'cpus')}xCPU, #{t.dig('attributes', 'memory')}GB, #{t.dig('attributes', 'disk')}GB SSD)", t['id']
       end
     end
   end
