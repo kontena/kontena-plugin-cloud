@@ -14,8 +14,6 @@ class Kontena::Plugin::Cloud::Platform::CreateCommand < Kontena::Command
   option '--version', 'VERSION', 'Platform version', visible: false
 
   def execute
-    confirm("This will create managed platform to Kontena Cloud, proceed?")
-
     self.name = prompt.ask("Name:") unless self.name
     self.organization = prompt_organization unless self.organization
     self.region = prompt_region unless self.region
