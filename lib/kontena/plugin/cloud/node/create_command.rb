@@ -7,6 +7,7 @@ class Kontena::Plugin::Cloud::Node::CreateCommand < Kontena::Command
   include Kontena::Cli::Common
   include Kontena::Machine::RandomName
   include Kontena::Plugin::Cloud::Node::Common
+  include Kontena::Plugin::Cloud::Node::PlatformOption
   include Kontena::Plugin::Cloud::Organization::Common
   include Kontena::Plugin::Cloud::Platform::Common
 

@@ -1,16 +1,8 @@
 require_relative '../../../cli/models/node'
 require_relative '../../../cli/models/platform'
+require_relative 'platform_option'
 
 module Kontena::Plugin::Cloud::Node::Common
-
-  def self.included(base)
-    if base.respond_to?(:option)
-      base.option '--platform', 'PLATFORM', 'Specify Kontena Cloud platform to use' do |platform|
-        config.current_master = platform
-        config.current_grid = platform.split('/')[1]
-      end
-    end
-  end
 
   def compute_client
     @compute_client ||= Kontena::Client.new(compute_url, config.current_account.token, prefix: '/')
