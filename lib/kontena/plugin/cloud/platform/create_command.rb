@@ -8,6 +8,7 @@ class Kontena::Plugin::Cloud::Platform::CreateCommand < Kontena::Command
   parameter "[NAME]", "Platform name"
 
   option ['--organization', '--org'], 'ORG', 'Organization name', environment_variable: 'KONTENA_ORGANIZATION'
+  option ['--type'], 'TYPE', 'Platform type (mini, standard)'
   option ['--region'], 'region', 'Region (us-east-1, eu-west-1)'
   option ['--initial-size', '-i'], 'SIZE', 'Initial size (number of nodes) for platform'
   option '--[no-]use', :flag, 'Switch to use created platform', default: true
@@ -16,12 +17,22 @@ class Kontena::Plugin::Cloud::Platform::CreateCommand < Kontena::Command
   def execute
     self.name = prompt.ask("Name:") unless self.name
     self.organization = prompt_organization unless self.organization
-    self.region = prompt_region unless self.region
-    self.initial_size = prompt_initial_size unless self.initial_size
+    self.type = prompt_type unless self.type
+    if self.type == 'mini' && self.region
+      exit_with_error "mini does not support region selection"
+    elsif self.type == 'mini'
+      self.region = nil
+      self.initial_size = 1 unless self.initial_size
+    else
+      self.region = prompt_region unless self.region
+      self.initial_size = 3 unless self.initial_size
+    end
 
     platform = nil
-    spinner "Creating platform #{pastel.cyan(name)} to region #{pastel.cyan(region)}" do
-      platform = create_platform(name, organization, initial_size, region)
+    spinner_text = "Creating platform #{pastel.cyan(name)}"
+    spinner_text = spinner_text + " to region #{pastel.cyan(region)}" if region
+    spinner spinner_text do
+      platform = create_platform(name, organization, type, initial_size, region)
     end
     spinner "Waiting for platform #{pastel.cyan(name)} to come online" do
       while !platform.online? do
@@ -30,6 +41,11 @@ class Kontena::Plugin::Cloud::Platform::CreateCommand < Kontena::Command
       end
     end
     use_platform(platform) if use?
+
+    puts ""
+    puts "  Platform #{pastel.cyan(name)} needs at least #{pastel.cyan(self.initial_size)} node(s) to be functional."
+    puts "  You can add nodes from Kontena Cloud ('kontena cloud node create --count #{self.initial_size}') or you can bring your own nodes (https://www.kontena.io/docs/using-kontena/install-nodes/)."
+    puts ""
   end
 
   # @param [Kontena::Cli::Models::Platform] platform
@@ -60,17 +76,20 @@ class Kontena::Plugin::Cloud::Platform::CreateCommand < Kontena::Command
     end
   end
 
-  def prompt_initial_size
-    prompt.select("Initial platform size (number of nodes):") do |menu|
-      menu.choice "1 (dev/test)", 1
-      menu.choice "3 (tolerates 1 initial node failure)", 3
-      menu.choice "5 (tolerates 2 initial node failures)", 5
+  def prompt_type
+    prompt.select("Platform type:") do |menu|
+      menu.choice "standard (high-availability, business critical services)", "standard"
+      menu.choice "mini (non-business critical services)", "mini"
     end
   end
 
-  def create_platform(name, organization, initial_size, region)
+  def create_platform(name, organization, type, initial_size, region)
     data = {
-      attributes: { "name" => name, "initial-size" => initial_size },
+      attributes: {
+        "name" => name,
+        "initial-size" => initial_size,
+        "hosted-type" => type
+      },
       relationships: {
         region: {
           "data" => { "type" => "region", "id" => region }
