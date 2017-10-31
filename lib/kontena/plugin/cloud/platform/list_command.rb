@@ -18,7 +18,7 @@ class Kontena::Plugin::Cloud::Platform::ListCommand < Kontena::Command
       platform = Kontena::Cli::Models::Platform.new(p)
       p['name'] = "#{state_icon(platform.state)} #{organization}/#{platform.name}"
       p['organization'] = platform.organization
-      p['url'] = platform.url
+      p['hosted_type'] = platform.hosted_type
       p['region'] = platform.region
     end
   end
@@ -30,6 +30,7 @@ class Kontena::Plugin::Cloud::Platform::ListCommand < Kontena::Command
   def fields
     {
       name: 'name',
+      type: 'hosted_type',
       region: 'region'
     }
   end

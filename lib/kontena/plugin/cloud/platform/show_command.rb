@@ -14,11 +14,11 @@ class Kontena::Plugin::Cloud::Platform::ShowCommand < Kontena::Command
     require_platform(name)
 
     platform = find_platform_by_name(current_platform, current_organization)
-
     puts "#{name}:"
     puts "  name: #{platform.name}"
     puts "  organization: #{current_organization}"
     puts "  version: #{platform.version}"
+    puts "  type: #{platform.hosted_type}"
     puts "  state: #{platform.state}"
     puts "  online: #{platform.online}"
     puts "  region: #{platform.region || '-'}"
