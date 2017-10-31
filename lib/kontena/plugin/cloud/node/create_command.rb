@@ -18,6 +18,7 @@ class Kontena::Plugin::Cloud::Node::CreateCommand < Kontena::Command
   end
   option "--type", "TYPE", "Node type", required: true
   option "--region", "REGION", "Region (us-east-1, eu-west-1, defaults to current platform region)"
+  option ["--label", "-l"], "LABEL", "Node labels", multivalued: true
 
   def execute
     org, platform = parse_platform_name(current_master.name)
@@ -35,7 +36,8 @@ class Kontena::Plugin::Cloud::Node::CreateCommand < Kontena::Command
     spinner "Provisioning a node #{pastel.cyan(name)} to platform #{pastel.cyan(platform.to_path)}, region #{pastel.cyan(target_region)}" do
       client.post("grids/#{current_grid}/nodes", {
         name: name,
-        token: node_token
+        token: node_token,
+        labels: self.label_list
       })
 
       data = {
