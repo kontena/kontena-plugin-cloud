@@ -5,6 +5,7 @@ require_relative '../platform/common'
 class Kontena::Plugin::Cloud::Node::ShellCommand < Kontena::Command
   include Kontena::Cli::Common
   include Kontena::Plugin::Cloud::Platform::Common
+  include Kontena::Plugin::Cloud::Node::PlatformOption
   include Kontena::Plugin::Cloud::Node::Common
 
   requires_current_account_token

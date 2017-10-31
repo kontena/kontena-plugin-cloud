@@ -6,6 +6,7 @@ class Kontena::Plugin::Cloud::Node::TerminateCommand < Kontena::Command
   include Kontena::Cli::Common
   include Kontena::Plugin::Cloud::Platform::Common
   include Kontena::Plugin::Cloud::Node::Common
+  include Kontena::Plugin::Cloud::Node::PlatformOption
 
   requires_current_account_token
 
