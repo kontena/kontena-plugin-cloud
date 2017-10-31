@@ -13,8 +13,9 @@ class Kontena::Plugin::Cloud::Node::RebootCommand < Kontena::Command
   parameter "NAME", "Node name"
 
   def execute
+    node = find_node(name)
+    exit_with_error "Node not found" unless node
     spinner "Sending reboot request to #{pastel.cyan(name)}" do
-      node = find_node(name)
       compute_client.post("/organizations/#{self.organization}/nodes/#{node.dig('id')}/reboot", {})
     end
   end
