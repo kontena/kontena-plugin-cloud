@@ -18,6 +18,7 @@ class Kontena::Plugin::Cloud::Node::CreateCommand < Kontena::Command
   end
   option "--type", "TYPE", "Node type", required: true
   option "--region", "REGION", "Region (us-east-1, eu-west-1, defaults to current platform region)"
+  option "--ssh-key", "SSH_KEY", "Path to ssh public key"
 
   def execute
     org, platform = parse_platform_name(current_master.name)
@@ -32,6 +33,16 @@ class Kontena::Plugin::Cloud::Node::CreateCommand < Kontena::Command
     name = "#{generate_name}-#{rand(1..999)}"
     node_token = SecureRandom.hex(32)
     target_region = self.region || platform.region
+    ssh_keys = []
+    if ssh_key
+      begin
+        key_path = File.realpath(ssh_key)
+        ssh_keys << File.read(key_path)
+      rescue Errno::ENOENT
+        exit_with_error "ssh key #{ssh_key} does not exist"
+      end
+    end
+
     spinner "Provisioning a node #{pastel.cyan(name)} to platform #{pastel.cyan(platform.to_path)}, region #{pastel.cyan(target_region)}" do
       client.post("grids/#{current_grid}/nodes", {
         name: name,
@@ -47,7 +58,8 @@ class Kontena::Plugin::Cloud::Node::CreateCommand < Kontena::Command
           tokens: {
             grid: token,
             node: node_token
-          }
+          },
+          'ssh-keys': ssh_keys
         },
         relationships: {
           platform: {
