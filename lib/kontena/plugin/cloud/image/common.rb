@@ -7,11 +7,11 @@ module Kontena::Plugin::Cloud::Image::Common
   end
 
   def image_registry_url
-    ENV['IMAGE_REGISTRY_URL'] || 'https://image-registry.kontena.io'
+    ENV['KONTENA_IMAGE_REGISTRY_URL'] || 'https://image-registry.kontena.io'
   end
 
   def image_distribution_url
-    ENV['IMAGE_DISTRIBUTION_URL'] || 'https://image.kontena.io'
+    ENV['KONTENA_IMAGES_URL'] || 'https://images.kontena.io'
   end
 
   def default_organization
