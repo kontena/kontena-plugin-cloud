@@ -15,6 +15,10 @@ module Kontena
         module User; end
       end
 
+      module Image
+        module Tag; end
+      end
+
       module Token; end;
     end
 
