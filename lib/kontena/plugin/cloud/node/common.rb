@@ -13,7 +13,7 @@ module Kontena::Plugin::Cloud::Node::Common
   end
 
   def compute_url
-    ENV['COMPUTE_URL'] || 'https://compute.kontena.io'
+    ENV['KONTENA_COMPUTE_URL'] || 'https://compute.kontena.io'
   end
 
   def get_platform(org, id)
