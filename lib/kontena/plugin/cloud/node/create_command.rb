@@ -19,9 +19,10 @@ class Kontena::Plugin::Cloud::Node::CreateCommand < Kontena::Command
   option "--type", "TYPE", "Node type", required: true
   option "--region", "REGION", "Region (us-east-1, eu-west-1, defaults to current platform region)"
   option "--ssh-key", "SSH_KEY", "Path to ssh public key"
+  option "--platform", "PLATFORM", "Platform name", environment_variable: 'KONTENA_PLATFORM'
 
   def execute
-    org, platform = parse_platform_name(current_master.name)
+    org, platform = parse_platform_name(current_platform)
     platform = require_platform("#{org}/#{platform}")
     grid = client.get("grids/#{current_grid}")
     self.count.times do
@@ -76,6 +77,10 @@ class Kontena::Plugin::Cloud::Node::CreateCommand < Kontena::Command
 
   def default_count
     prompt.ask("How many nodes?", default: 1).to_i
+  end
+
+  def default_platform
+    current_master.name
   end
 
   def default_type
