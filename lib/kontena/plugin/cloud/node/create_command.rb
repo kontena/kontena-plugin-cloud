@@ -79,11 +79,7 @@ class Kontena::Plugin::Cloud::Node::CreateCommand < Kontena::Command
   end
 
   def current_platform
-    if ENV['KONTENA_PLATFORM']
-      ENV['KONTENA_PLATFORM']
-    else
-      current_master.name
-    end
+    ENV['KONTENA_PLATFORM'] || current_master.name
   end
 
   def default_type
