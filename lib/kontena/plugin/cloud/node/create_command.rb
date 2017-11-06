@@ -22,7 +22,7 @@ class Kontena::Plugin::Cloud::Node::CreateCommand < Kontena::Command
   option "--platform", "PLATFORM", "Platform name", environment_variable: 'KONTENA_PLATFORM'
 
   def execute
-    org, platform = parse_platform_name(current_platform)
+    org, platform = parse_platform_name(self.platform)
     platform = require_platform("#{org}/#{platform}")
     grid = client.get("grids/#{current_grid}")
     self.count.times do
