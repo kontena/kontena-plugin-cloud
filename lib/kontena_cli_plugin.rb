@@ -13,7 +13,7 @@ module Kontena
             config.current_master = platform
             config.current_grid = platform.split('/')[1]
           end
-          #base.option '--grid', 'GRID', 'Specify grid to use'
+          base.option '--grid', 'GRID', 'Specify grid to use'
         end
       end
     end
