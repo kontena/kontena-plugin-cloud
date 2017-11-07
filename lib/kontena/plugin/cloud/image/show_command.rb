@@ -15,6 +15,6 @@ class Kontena::Plugin::Cloud::Image::ShowCommand < Kontena::Command
     puts "  created: #{ time_ago(repo.created_at.to_i)}"
     puts "  updated: #{ time_ago(repo.updated_at.to_i)}"
     puts "  pulls: #{repo.pulls}"
-    puts "  pushs: #{repo.pushs}"
+    puts "  pushes: #{repo.pushs}"
   end
 end
