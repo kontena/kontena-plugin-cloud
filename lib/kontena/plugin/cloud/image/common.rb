@@ -14,11 +14,12 @@ module Kontena::Plugin::Cloud::Image::Common
     ENV['KONTENA_IMAGES_URL'] || 'https://images.kontena.io'
   end
 
-  def default_organization
+  def default_org
     unless current_master
       exit_with_error "Organization is required"
     end
     org, _ = current_master.name.split('/')
+
     org
   end
 end

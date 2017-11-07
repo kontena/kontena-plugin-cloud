@@ -6,10 +6,15 @@ class Kontena::Plugin::Cloud::Image::ListCommand < Kontena::Command
   include Kontena::Plugin::Cloud::Image::Common
   include Kontena::Cli::TableGenerator::Helper
 
+  option ["--organization", "--org"], "ORG", "Organization", environment_variable: "KONTENA_ORGANIZATION"
+
   requires_current_account_token
 
   def execute
-    repos = image_registry_client.get("/organizations/acme/repositories")['data']
+
+    org = self.organization || default_org
+
+    repos = image_registry_client.get("/organizations/#{org}/repositories")['data']
     print_table(repos) do |r|
       r['pulls'] = r.dig('attributes', 'pulls')
       r['created_at'] = time_ago( Time.parse(r.dig('attributes', 'created-at')).to_i )
