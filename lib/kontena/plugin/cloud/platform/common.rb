@@ -52,7 +52,7 @@ module Kontena::Plugin::Cloud::Platform::Common
     @current_organization = org
     p = find_platform_by_name(platform, org)
     exit_with_error("Platform not found") unless p
-    return p if ENV['KONTENA_PLATFORM']
+    return p if ENV['KONTENA_PLATFORM'] == name
     unless platform_config_exists?(p.to_path)
       login_to_platform("#{current_organization}/#{platform}", p.url)
     end
