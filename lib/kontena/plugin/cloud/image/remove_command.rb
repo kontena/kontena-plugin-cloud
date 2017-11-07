@@ -1,6 +1,6 @@
 require_relative 'common'
 
-class Kontena::Plugin::Cloud::Image::ShowCommand < Kontena::Command
+class Kontena::Plugin::Cloud::Image::RemoveCommand < Kontena::Command
   include Kontena::Cli::Common
   include Kontena::Util
   include Kontena::Plugin::Cloud::Image::Common
