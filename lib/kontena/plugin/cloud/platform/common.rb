@@ -1,5 +1,6 @@
 require_relative '../../../cli/master_code_exchanger'
 require_relative '../../../cli/models/platform'
+require 'kontena/cli/master/login_command'
 
 module Kontena::Plugin::Cloud::Platform::Common
 
@@ -99,11 +100,13 @@ module Kontena::Plugin::Cloud::Platform::Common
     authorization = cloud_client.post("/organizations/#{organization}/masters/#{platform.master_id}/authorize", {})
     exchanger = Kontena::Cli::MasterCodeExchanger.new(platform.url)
     code = exchanger.exchange_code(authorization['code'])
+
+    login = Kontena::Cli::Master::LoginCommand.new('kontena')
     cmd = [
-      'master', 'login', '--silent', '--no-login-info', '--skip-grid-auto-select',
+      '--silent', '--no-login-info', '--skip-grid-auto-select',
       '--name', name, '--code', code, url
     ]
-    Kontena.run!(cmd)
+    login.run(cmd)
   rescue => e
     error e.message
   end
