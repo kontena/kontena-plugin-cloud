@@ -78,10 +78,6 @@ class Kontena::Plugin::Cloud::Node::CreateCommand < Kontena::Command
     prompt.ask("How many nodes?", default: 1).to_i
   end
 
-  def current_platform
-    ENV['KONTENA_PLATFORM'] || current_master.name
-  end
-
   def default_type
     node_types = compute_client.get("/node_types")['data']
     prompt.select("Choose node type:") do |menu|

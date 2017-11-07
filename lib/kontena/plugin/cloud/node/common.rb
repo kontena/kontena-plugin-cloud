@@ -28,6 +28,10 @@ module Kontena::Plugin::Cloud::Node::Common
     cached_platforms_by_id[id]
   end
 
+  def current_platform
+    ENV['KONTENA_PLATFORM'] || current_master.name
+  end
+
   def cached_platforms_by_id
     @cached_platforms_by_id ||= {}
   end

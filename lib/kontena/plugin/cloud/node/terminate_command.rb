@@ -14,7 +14,7 @@ class Kontena::Plugin::Cloud::Node::TerminateCommand < Kontena::Command
   option "--force", :flag, "Force remove", default: false, attribute_name: :forced
 
   def execute
-    org, platform = parse_platform_name(current_master.name)
+    org, platform = parse_platform_name(current_platform)
     unless self.name
       name = prompt_name(platform, org)
     else
