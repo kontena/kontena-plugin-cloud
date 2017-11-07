@@ -19,7 +19,12 @@ class Kontena::Plugin::Cloud::Image::LoginCommand < Kontena::Command
     end
     if success
       puts ""
-      puts "  Login succeeded, you should be now able to push and pull images using docker cli from #{image_distribution_url}"
+      puts "  Login succeeded, you should now able to push and pull images using docker cli from #{image_distribution_url}"
+      puts ""
+      puts "  To configure grid nodes to be able to pull from Kontena Cloud Image Registry you must:"
+      puts "  1. Create non-expiring token for authentication: kontena cloud token create <name>"
+      puts "  2. Configure your platform to use Kontena Cloud Image Registry as external registry:"
+      puts "     kontena external-registry add -e <email> -u <username> -p <token> https://images.kontena.io"
       puts ""
     end
   end
