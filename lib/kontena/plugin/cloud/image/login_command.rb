@@ -1,5 +1,6 @@
 require_relative 'common'
 require 'shellwords'
+require 'open3'
 
 class Kontena::Plugin::Cloud::Image::LoginCommand < Kontena::Command
   include Kontena::Cli::Common
@@ -18,10 +19,18 @@ class Kontena::Plugin::Cloud::Image::LoginCommand < Kontena::Command
       pass = token.dig('attributes', 'access-token')
 
       if `docker login --help`['--password-stdin']
-        system("echo '%s' | docker login -u %s --password-stdin %s > /dev/null" % [pass, current_account.username, image_distribution_url].map(&:shellescape)) || spin.fail
+        output, stderr, status = Open3.capture3("docker login -u %s --password-stdin %s" % [current_account.username, image_distribution_url].map(&:shellescape), :stdin_data => pass)
+        unless status.success?
+          exit_with_error stderr
+        end
       else
-        system("docker login -u %s --password %s %s > /dev/null" % [current_account.username, pass, image_distribution_url].map(&:shellescape)) || spin.fail
+        pass = 'foo'
+        output, stderr, status = Open3.capture3("docker login -u %s --password \"%s\" %s" % [current_account.username, pass, image_distribution_url])
+        unless status.success?
+          exit_with_error stderr
+        end
       end
+      true
     end
 
     if success
