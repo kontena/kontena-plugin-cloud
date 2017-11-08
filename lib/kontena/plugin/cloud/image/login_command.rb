@@ -26,12 +26,24 @@ class Kontena::Plugin::Cloud::Image::LoginCommand < Kontena::Command
 
     if success
       puts
-      puts "  Login succeeded. Now you should be able to push and pull images using docker cli from #{pastel.cyan(image_distribution_url)}"
-      puts "  To configure grid nodes to be able to pull from Kontena Cloud Image Registry you should:"
+      puts "  Login succeeded. Now you should be able to push and pull images using docker"
+      puts "  cli from #{pastel.cyan(image_distribution_url)}"
       puts
-      puts "  1. Create a non-expiring token for authentication: #{pastel.green.on_black(' kontena cloud token create <name> ')}"
-      puts "  2. Configure your platform to use Kontena Cloud Image Registry as an external registry:"
-      puts "     #{pastel.green.on_black(' kontena external-registry add -e <email> -u <username> -p <token> https://images.kontena.io ')}"
+      puts "  Example:"
+      puts
+      puts "  #{pastel.green.on_black(' docker tag localimage images.kontena.io/organization/imagename ')}"
+      puts "  #{pastel.green.on_black(' docker push images.kontena.io/organization/imagename           ')}"
+      puts
+      puts "  To configure grid nodes to pull from Kontena Cloud Image Registry you should:"
+      puts
+      puts "  1. Create a non-expiring token for authentication:"
+      puts
+      puts "     #{pastel.green.on_black(' kontena cloud token create <name> ')}"
+      puts
+      puts "  2. Configure your platform to use Kontena Cloud Image Registry as an external"
+      puts "     registry:"
+      puts
+      puts "     #{pastel.green.on_black(' kontena external-registry add -u <username> -p <token> https://images.kontena.io ')}"
       puts
     end
   end
