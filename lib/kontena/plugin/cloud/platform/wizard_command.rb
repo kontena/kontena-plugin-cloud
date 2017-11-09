@@ -34,9 +34,8 @@ class Kontena::Plugin::Cloud::Platform::WizardCommand < Kontena::Command
       end
     end
 
-    platform = nil
-    spinner "Creating platform master #{pastel.cyan(self.name)} to region #{pastel.cyan(self.region)}" do
-      platform = create_platform(self.name, self.organization, self.initial_size, self.region, self.type)
+    platform = spinner "Creating platform master #{pastel.cyan(self.name)} to region #{pastel.cyan(self.region)}" do
+      create_platform(self.name, self.organization, self.initial_size, self.region, self.type)
     end
     spinner "Waiting for platform master #{pastel.cyan(name)} to come online" do
       while !platform.online? do
