@@ -22,10 +22,10 @@ class Kontena::Plugin::Cloud::Image::Tag::ListCommand < Kontena::Command
 
   def fields
     {
-      'name': 'id',
-      'pulls': 'pulls',
-      'pushes': 'pushs',
-      'updated': 'updated_at'
+      'name' => 'id',
+      'pulls' => 'pulls',
+      'pushes' => 'pushs',
+      'updated' => 'updated_at'
     }
   end
 end

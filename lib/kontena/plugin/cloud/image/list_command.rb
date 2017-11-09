@@ -24,10 +24,10 @@ class Kontena::Plugin::Cloud::Image::ListCommand < Kontena::Command
 
   def fields
     {
-      'name': 'id',
-      'pulls': 'pulls',
-      'public': 'public',
-      'created': 'created_at'
+      'name' => 'id',
+      'pulls' => 'pulls',
+      'public' => 'public',
+      'created' => 'created_at'
     }
   end
 end
