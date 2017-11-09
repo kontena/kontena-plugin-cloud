@@ -6,6 +6,7 @@ class Kontena::Plugin::Cloud::Platform::WizardCommand < Kontena::Command
   requires_current_account_token
 
   INFRASTRUCTURE = {
+    'cloud' => 'Kontena Cloud',
     'aws' => 'Amazon Web Services (EC2)',
     'digitalocean' => 'DigitalOcean',
     'vagrant' => 'Vagrant (with VirtualBox)'
@@ -13,6 +14,7 @@ class Kontena::Plugin::Cloud::Platform::WizardCommand < Kontena::Command
 
   parameter "[NAME]", "Platform name"
   option ['--organization', '--org'], 'ORG', 'Organization name', environment_variable: 'KONTENA_ORGANIZATION'
+  option '--type', 'TYPE', 'Platform type (mini, standard)'
   option ['--region'], 'region', 'Region (us-east-1, eu-west-1)'
   option ['--initial-size', '-i'], 'SIZE', 'Initial size (number of nodes) for platform'
   option '--version', 'VERSION', 'Platform version', visible: false
@@ -22,12 +24,19 @@ class Kontena::Plugin::Cloud::Platform::WizardCommand < Kontena::Command
 
     self.name = prompt.ask("Name:") unless self.name
     self.organization = prompt_organization unless self.organization
-    self.region = prompt_region unless self.region
-    self.initial_size = prompt_initial_size unless self.initial_size
+    self.type = prompt_type unless self.type
+    self.region = prompt_region if self.region.nil? && self.type != 'mini'
+    unless self.initial_size
+      if self.type == 'mini'
+        self.initial_size = 1
+      else
+        self.initial_size = 3
+      end
+    end
 
     platform = nil
-    spinner "Creating platform master #{pastel.cyan(name)} to region #{pastel.cyan(region)}" do
-      platform = create_platform(name, organization, initial_size, region)
+    spinner "Creating platform master #{pastel.cyan(self.name)} to region #{pastel.cyan(self.region)}" do
+      platform = create_platform(self.name, self.organization, self.initial_size, self.region, self.type)
     end
     spinner "Waiting for platform master #{pastel.cyan(name)} to come online" do
       while !platform.online? do
@@ -44,6 +53,8 @@ class Kontena::Plugin::Cloud::Platform::WizardCommand < Kontena::Command
     end
 
     case infra
+    when 'cloud'
+      create_cloud
     when 'aws'
       create_aws
     when 'digitalocean'
@@ -67,6 +78,13 @@ class Kontena::Plugin::Cloud::Platform::WizardCommand < Kontena::Command
     end
   end
 
+  def prompt_type
+    prompt.select("Platform type:") do |menu|
+      menu.choice "standard (high-availability, business critical services)", "standard"
+      menu.choice "mini (non-business critical services)", "mini"
+    end
+  end
+
   def prompt_organization
     organizations = cloud_client.get('/organizations')['data']
     prompt.select("Choose organization:") do |menu|
@@ -85,17 +103,9 @@ class Kontena::Plugin::Cloud::Platform::WizardCommand < Kontena::Command
     end
   end
 
-  def prompt_initial_size
-    prompt.select("Initial platform size (number of nodes):") do |menu|
-      menu.choice "1 (dev/test)", 1
-      menu.choice "3 (tolerates 1 initial node failure)", 3
-      menu.choice "5 (tolerates 2 initial node failures)", 5
-    end
-  end
-
-  def create_platform(name, organization, initial_size, region)
+  def create_platform(name, organization, initial_size, region, type)
     data = {
-      attributes: { "name" => name, "initial-size" => initial_size },
+      attributes: { "name" => name, "initial-size" => initial_size, "hosted-type" => type },
       relationships: {
         region: {
           "data" => { "type" => "region", "id" => region }
@@ -105,6 +115,12 @@ class Kontena::Plugin::Cloud::Platform::WizardCommand < Kontena::Command
     data[:attributes]['version'] = self.version if self.version
     data = cloud_client.post("/organizations/#{organization}/platforms", { data: data })['data']
     Kontena::Cli::Models::Platform.new(data)
+  end
+
+  def create_cloud
+    Kontena.run!([
+      'cloud', 'node', 'create', '--count', self.initial_size
+    ])
   end
 
   def create_vagrant
