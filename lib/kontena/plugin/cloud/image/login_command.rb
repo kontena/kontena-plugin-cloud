@@ -24,7 +24,6 @@ class Kontena::Plugin::Cloud::Image::LoginCommand < Kontena::Command
           exit_with_error stderr
         end
       else
-        pass = 'foo'
         output, stderr, status = Open3.capture3("docker login -u %s --password \"%s\" %s" % [current_account.username, pass, image_distribution_url])
         unless status.success?
           exit_with_error stderr
