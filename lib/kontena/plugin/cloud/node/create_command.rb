@@ -59,7 +59,7 @@ class Kontena::Plugin::Cloud::Node::CreateCommand < Kontena::Command
             grid: token,
             node: node_token
           },
-          'ssh-keys': ssh_keys
+          'ssh-keys' => ssh_keys
         },
         relationships: {
           platform: {
