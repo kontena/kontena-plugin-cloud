@@ -19,7 +19,7 @@ class Kontena::Plugin::Cloud::Image::CreateCommand < Kontena::Command
       }
     }
     spinner "Creating image repository #{pastel.cyan(name)}" do
-      image_registry_client.post("/repositories", JSON.dump(body))
+      image_registry_client.post("/repositories", body)
     end
   end
 
