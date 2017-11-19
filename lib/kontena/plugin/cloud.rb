@@ -1,7 +1,7 @@
 module Kontena
   module Plugin
     module Cloud
-      VERSION = "1.2.0.pre6"
+      VERSION = "1.2.0"
 
       module Organization
         module User; end
