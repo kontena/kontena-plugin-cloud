@@ -1,7 +1,7 @@
 module Kontena
   module Plugin
     module Cloud
-      VERSION = "1.2.0.pre1"
+      VERSION = "1.2.0"
 
       module Organization
         module User; end
@@ -13,6 +13,10 @@ module Kontena
 
       module Platform
         module User; end
+      end
+
+      module Image
+        module Tag; end
       end
 
       module Token; end;
