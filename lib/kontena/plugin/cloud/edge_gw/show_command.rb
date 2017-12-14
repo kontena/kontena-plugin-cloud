@@ -30,6 +30,7 @@ class Kontena::Plugin::Cloud::EdgeGw::ShowCommand < Kontena::Command
     puts "#{gw.organization_id}/#{gw.name}:"
     puts "  id: #{gw.id}"
     puts "  created_at: #{time_ago(gw.created_at.to_i)}"
+    puts "  dns: #{gw.dns}"
     puts "  region: #{gw.region}"
     puts "  state: #{gw.state}"
     puts "  nodes:"
