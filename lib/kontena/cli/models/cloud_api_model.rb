@@ -19,7 +19,7 @@ module Kontena::Cli::Models
       if api_data['attributes'].has_key?(key)
         api_data['attributes'][key]
       else
-        raise ArgumentError.new("Method `#{m}` doesn't exist.")
+        super
       end
     end
   end

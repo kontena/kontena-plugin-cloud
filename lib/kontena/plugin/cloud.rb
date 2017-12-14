@@ -8,8 +8,8 @@ module Kontena
       end
 
       module Region; end
-
       module Node; end
+      module EdgeGw; end
 
       module Platform
         module User; end
