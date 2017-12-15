@@ -1,7 +1,10 @@
 require_relative '../../../cli/models/image_repo'
 require_relative '../../../cli/models/image_tag'
+require_relative '../organization/common'
 
 module Kontena::Plugin::Cloud::Image::Common
+  include Kontena::Plugin::Cloud::Organization::Common
+
   def image_registry_client
     @compute_client ||= Kontena::Client.new(image_registry_url, config.current_account.token, prefix: '/')
   end
@@ -15,10 +18,11 @@ module Kontena::Plugin::Cloud::Image::Common
   end
 
   def default_org
-    unless current_master
-      exit_with_error "Organization is required"
+    if current_master && current_master.name.include?('/')
+      org, _ = current_master.name.split('/')
+    else
+      org = prompt_organization
     end
-    org, _ = current_master.name.split('/')
 
     org
   end
