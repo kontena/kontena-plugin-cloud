@@ -9,7 +9,7 @@ class Kontena::Plugin::Cloud::Platform::ListCommand < Kontena::Command
 
   requires_current_account_token
 
-  option ["--organization", "--org"], "ORG", "Organization", environment_variable: "KONTENA_ORGANIZATION"
+  option ["--organization", "-o"], "ORG", "Organization", environment_variable: "KONTENA_ORGANIZATION"
 
   def execute
     platforms = cloud_client.get("/organizations/#{organization}/platforms")['data']
